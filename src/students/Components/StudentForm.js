@@ -1,9 +1,18 @@
 import React from "react";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { FormGroup, FormControl, Button } from "react-bootstrap";
+import { FormGroup, FormControl, Button, CloseButton } from "react-bootstrap";
+import { useStore, useStoreDispatch } from '../../StoreProvider'
   
 const StudentForm = (props) => {
+
+  //const dispatch = useStoreDispatch();
+
+  const closeForm = () => {
+    //dispatch({ type: 'CLOSE_STUDENT' })
+    props.setMode(null)
+  }
+
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Required"),
     email: Yup.string()
@@ -14,14 +23,16 @@ const StudentForm = (props) => {
       .integer("Invalid roll number")
       .required("Required"),
   });
+
   console.log(props);
+
   return (
     <div className="form-wrapper">
+      <CloseButton onClick={closeForm}/>
       <Formik {...props} validationSchema={validationSchema}>
         <Form>
           <FormGroup>
-            <Field name="name" type="text" 
-                className="form-control" />
+            <Field name="name" type="text" className="form-control" />
             <ErrorMessage
               name="name"
               className="d-block invalid-feedback"
@@ -29,8 +40,7 @@ const StudentForm = (props) => {
             />
           </FormGroup>
           <FormGroup>
-            <Field name="email" type="text" 
-                className="form-control" />
+            <Field name="email" type="text" className="form-control" />
             <ErrorMessage
               name="email"
               className="d-block invalid-feedback"
@@ -38,15 +48,20 @@ const StudentForm = (props) => {
             />
           </FormGroup>
           <FormGroup>
-            <Field name="rollno" type="number" 
-                className="form-control" />
+            <Field name="rollno" type="number" className="form-control" />
             <ErrorMessage
               name="rollno"
               className="d-block invalid-feedback"
               component="span"
             />
           </FormGroup>
-          <Button variant="danger" size="lg" 
+
+          <Button variant="danger" size="sm" onClick={closeForm}
+            block="block" type="button">
+            Cancel
+          </Button>
+
+          <Button variant="primary" size="sm" 
             block="block" type="submit">
             {props.children}
           </Button>

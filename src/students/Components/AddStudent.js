@@ -1,12 +1,8 @@
-// CreateStudent Component for add new student
-
-// Import Modules
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import StudentForm from "./StudentForm";
 
-// CreateStudent Component
-const CreateStudent = () => {
+const AddStudent = ({setMode}) => {
     const [formValues, setFormValues] =
         useState({ name: '', email: '', rollno: '' })
     // onSubmit handler
@@ -26,11 +22,12 @@ const CreateStudent = () => {
     return (
         <StudentForm initialValues={formValues}
             onSubmit={onSubmit}
-            enableReinitialize>
+            enableReinitialize
+            setMode={setMode}
+        >
             Create Student
         </StudentForm>
     )
 }
 
-// Export CreateStudent Component
-export default CreateStudent
+export default AddStudent

@@ -2,9 +2,7 @@
 import React from "react";
 
 // Import Bootstrap
-import { Nav, Navbar, Container, Row, Col }
-  from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.css";
+import { Nav, Navbar, Container, Row, Col } from "react-bootstrap";
 
 // Import Custom CSS
 import "./App.css";
@@ -16,12 +14,7 @@ import {
 } from "react-router-dom";
 
 // Import other React Component
-import CreateStudent from
-  "./Components/create-student.component";
-import EditStudent from
-  "./Components/edit-student.component";
-import StudentList from
-  "./Components/student-list.component";
+import Students from "./students/Students";
 
 // App Component
 const App = () => {
@@ -32,24 +25,24 @@ const App = () => {
           <Navbar bg="dark" variant="dark">
             <Container>
               <Navbar.Brand>
-                <Link to={"/create-student"}
+                <Link to={"/students"}
                   className="nav-link">
-                  React MERN Stack App
+                  Students
                 </Link>
               </Navbar.Brand>
 
               <Nav className="justify-content-end">
-                <Nav>
+                {/* <Nav>
                   <Link to={"/create-student"}
                     className="nav-link">
                     Create Student
                   </Link>
-                </Nav>
+                </Nav> */}
 
                 <Nav>
-                  <Link to={"/student-list"}
+                  <Link to={"/students"}
                     className="nav-link">
-                    Student List
+                    Students
                   </Link>
                 </Nav>
               </Nav>
@@ -62,14 +55,8 @@ const App = () => {
             <Col md={12}>
               <div className="wrapper">
                 <Routes>
-                  <Route exact path="/"
-                    element={<CreateStudent/>} />
-                  <Route path="/create-student"
-                    element={<CreateStudent/>} />
-                  <Route path="/edit-student/:id"
-                    element={<EditStudent/>} />
-                  <Route path="/student-list"
-                    element={<StudentList/>} />
+                  <Route exact path="/" element={<Students/>} />
+                  <Route path="/students" element={<Students />} />
                 </Routes>
               </div>
             </Col>

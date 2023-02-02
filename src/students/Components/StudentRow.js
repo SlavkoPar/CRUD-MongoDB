@@ -1,10 +1,11 @@
 import React from "react";
 import { Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import axios from "axios";
 
-const StudentTableRow = (props) => {
-    const { _id, name, email, rollno } = props.obj;
+//import { useStore, useStoreDispatch } from '../../StoreProvider'
+
+const StudentRow = ({student, setMode, setId}) => {
+    const { _id, name, email, rollno } = student;
 
     const deleteStudent = () => {
         axios
@@ -12,11 +13,15 @@ const StudentTableRow = (props) => {
             .then((res) => {
                 if (res.status === 200) {
                     alert("Student successfully deleted");
-                    window.location.reload();
+                    // window.location.reload();
                 } else Promise.reject();
             })
             .catch((err) => alert("Something went wrong"));
     };
+
+      
+    // const store = useStore();
+    //const dispatch = useStoreDispatch();
 
     return (
         <tr>
@@ -24,12 +29,11 @@ const StudentTableRow = (props) => {
             <td>{email}</td>
             <td>{rollno}</td>
             <td>
-                <Link className="edit-link"
-                    to={"/edit-student/" + _id}>
-                    Edit
-                </Link>
-                <Button onClick={deleteStudent}
-                    size="sm" variant="danger">
+                {/* <Button size="sm" className="ms-2" onClick={() => dispatch({ type: 'EDIT_STUDENT', _id })}> */}
+                <Button size="sm" className="ms-2" onClick={() => { setId(_id); setMode('edit'); }}>
+                Edit
+                </Button>
+                <Button onClick={deleteStudent} size="sm" variant="danger">
                     Delete
                 </Button>
             </td>
@@ -37,4 +41,4 @@ const StudentTableRow = (props) => {
     );
 };
 
-export default StudentTableRow;
+export default StudentRow;

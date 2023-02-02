@@ -1,30 +1,37 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Table } from "react-bootstrap";
-import StudentTableRow from "./StudentTableRow";
+import { Table, Button } from "react-bootstrap";
+import StudentRow from "./StudentRow";
 
-const StudentList = () => {
+const StudentList = ({ setMode, setId }) => {
+    const [page, setPage] = useState(1);
     const [students, setStudents] = useState([]);
 
+    const url = "http://localhost:4000/students/"
     useEffect(() => {
+        console.log('FETCHING StudentList')
         axios
-            .get("http://localhost:4000/students/")
+            .get(url)
             .then(({ data }) => {
                 setStudents(data);
             })
             .catch((error) => {
                 console.log(error);
             });
-    }, []);
+    }, [url, page]);
+    console.log('RENDERING StudentList')
 
-    const DataTable = () => {
-        return students.map((res, i) => {
-            return <StudentTableRow obj={res} key={i} />;
-        });
-    };
+    const add = () => {
+        setMode('add')
+    }
 
     return (
         <div className="table-wrapper">
+            <Button variant="secondary" size="sm" onClick={add}
+                block="block" type="button">
+                Add Student
+            </Button>
+
             <Table striped bordered hover>
                 <thead>
                     <tr>
@@ -34,7 +41,9 @@ const StudentList = () => {
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody>{DataTable()}</tbody>
+                <tbody>
+                    {students.map((student, i) => <StudentRow student={student} key={i} setMode={setMode} setId={setId} />)}
+                </tbody>
             </Table>
         </div>
     );

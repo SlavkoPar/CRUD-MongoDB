@@ -1,16 +1,14 @@
-// EditStudent Component for update student data
-
-// Import Modules
-import { useParams } from 'react-router-dom' // useRouteMatch
+//import { useParams } from 'react-router-dom'
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import StudentForm from "./StudentForm";
 
-// EditStudent Component
-const EditStudent = (props) => {
 
-    const { id } = useParams();
-    const url = `http://localhost:4000/students/update-student/${id}`;
+const EditStudent = ({setMode, _id}) => {
+
+    //const { id } = useParams();
+    
+    const url = `http://localhost:4000/students/update-student/${_id}`;
 
     const [formValues, setFormValues] = useState({
         name: "",
@@ -18,7 +16,6 @@ const EditStudent = (props) => {
         rollno: "",
     });
 
-    //onSubmit handler
     const onSubmit = (studentObject) => {
         axios
             .put(url, studentObject)
@@ -49,6 +46,7 @@ const EditStudent = (props) => {
             initialValues={formValues}
             onSubmit={onSubmit}
             enableReinitialize
+            setMode={setMode}
         >
             Update Student
         </StudentForm>
