@@ -13,7 +13,7 @@ const AddCategory = () => {
 
     const onSubmit = categoryObject => {
         axios
-            .post('http://localhost:4000/students/create-student', categoryObject)
+            .post('http://localhost:4000/categories/create-category', categoryObject)
             .then(res => {
                 if (res.status === 200) {
                     console.log('Category successfully created')

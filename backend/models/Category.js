@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let studentSchema = new Schema({
+let categorySchema = new Schema({
     name: {
         type: String
     },
@@ -12,7 +12,7 @@ let studentSchema = new Schema({
         type: Number
     }
 }, {
-    collection: 'students'
+    collection: 'categories'
 })
 
-module.exports = mongoose.model('Student', studentSchema)
+module.exports = mongoose.model('Category', categorySchema)

@@ -2,12 +2,11 @@ let mongoose = require("mongoose"),
     express = require("express"),
     router = express.Router();
 
-// Student Model
-let studentSchema = require("../models/Student");
+let categorySchema = require("../models/Category");
 
-// CREATE Student
-router.post("/create-student", (req, res, next) => {
-    studentSchema.create(req.body, (error, data) => {
+// CREATE Category
+router.post("/create-category", (req, res, next) => {
+    categorySchema.create(req.body, (error, data) => {
         if (error) {
             return next(error);
         } else {
@@ -17,9 +16,9 @@ router.post("/create-student", (req, res, next) => {
     });
 });
 
-// READ Students
+// READ Categories
 router.get("/", (req, res, next) => {
-    studentSchema.find((error, data) => {
+    categorySchema.find((error, data) => {
         if (error) {
             return next(error);
         } else {
@@ -28,12 +27,12 @@ router.get("/", (req, res, next) => {
     });
 });
 
-// UPDATE student
+// UPDATE Category
 router
-    .route("/update-student/:id")
-    // Get Single Student
+    .route("/update-category/:id")
+    // Get Single Category
     .get((req, res, next) => {
-        studentSchema.findById(
+        categorySchema.findById(
             req.params.id, (error, data) => {
                 if (error) {
                     return next(error);
@@ -43,9 +42,9 @@ router
             });
     })
 
-    // Update Student Data
+    // Update Category Data
     .put((req, res, next) => {
-        studentSchema.findByIdAndUpdate(
+        categorySchema.findByIdAndUpdate(
             req.params.id,
             {
                 $set: req.body,
@@ -56,16 +55,16 @@ router
                     return next(error);
                 } else {
                     res.json(data);
-                    console.log("Student updated successfully !");
+                    console.log("Category updated successfully !");
                 }
             }
         );
     });
 
-// Delete Student
-router.delete("/delete-student/:id",
+// Delete Category
+router.delete("/delete-category/:id",
     (req, res, next) => {
-        studentSchema.findByIdAndRemove(
+        categorySchema.findByIdAndRemove(
             req.params.id, (error, data) => {
                 if (error) {
                     return next(error);

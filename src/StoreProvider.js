@@ -23,41 +23,22 @@ export const useStoreDispatch = () => {
   return useContext(StoreDispatchContext)
 };
 
-const MODES = {
-  NULL: null,
-  ADD: 'add',
-  EDIT: 'edit'
-}
-
 export const ActionTypes = {
-	GET_STUDENT: 'GET_STUDENT',
-	ADD_STUDENT: 'ADD_STUDENT',
-	EDIT_STUDENT: 'EDIT_STUDENT',
-  CLOSE_STUDENT: 'CLOSE_STUDENT'
+	AUTHENTICATE: 'AUTHENTICATE',
 }
 
 function storeReducer(state, action) {
   switch (action.type) {
-    case ActionTypes.ADD_STUDENT: {
-      return {...state, students : { ...state.students, mode: MODES.ADD }};
+    case ActionTypes.AUTHENTICATE: {
+      return {...state, isAuthenticated: true};
     }
-    case ActionTypes.EDIT_STUDENT: {
-      return {...state, students: { ...state.students, mode: MODES.EDIT, _id: action._id }};
-    }
-    case ActionTypes.CLOSE_STUDENT: {
-      return {...state, students: { ...state.students, mode: null, _id: null }};
-    }    
     default: {
       throw Error('Unknown action: ' + action.type);
     }
   }
 }
 
-
-export const initialState = {
-  students: {
-    mode: MODES.NULL,
-    id: null
-  }
+const initialState = {
+  isAuthenticated: null
 }
 

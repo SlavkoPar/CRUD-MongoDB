@@ -12,7 +12,7 @@ const EditCategory = () => {
     const { store, getCategories } = useCategoryContext();
     const dispatch = useCategoryDispatch();
     
-    const url = `http://localhost:4000/students/update-student/${store._id}`;
+    const url = `http://localhost:4000/categories/update-category/${store._id}`;
 
     const [formValues, setFormValues] = useState({
         name: "",
@@ -20,14 +20,13 @@ const EditCategory = () => {
         rollno: "",
     });
 
-    const onSubmit = (studentObject) => {
+    const onSubmit = (categoryObject) => {
         axios
-            .put(url, studentObject)
+            .put(url, categoryObject)
             .then((res) => {
                 if (res.status === 200) {
                     console.log("Category successfully updated");
                     getCategories()
-                    //props.history.push("/student-list");
                 } 
                 else Promise.reject();
             })
@@ -35,7 +34,7 @@ const EditCategory = () => {
         dispatch({ type: CategoryActionTypes.CLOSE_FORM })
     };
 
-    // Load data from server and reinitialize student form
+    // Load data from server and reinitialize category form
     useEffect(() => {
         axios
             .get(url)
@@ -46,17 +45,15 @@ const EditCategory = () => {
             .catch((err) => console.log(err));
     }, [url]);
 
-    // Return student form
     return (
         <CategoryForm
             initialValues={formValues}
             onSubmit={onSubmit}
             enableReinitialize
         >
-            Update Student
+            Update Category
         </CategoryForm>
     );
 };
 
-// Export EditStudent Component
 export default EditCategory;

@@ -6,26 +6,23 @@ const CategoryDispatchContext = createContext(null);
 
 export function CategoryProvider({ children }) {
 
-  // const [loading, setLoading] = useState(true);
-  const url = "http://localhost:4000/students/"
-  // useEffect(() => {
-  //   axios
-  //     .get(url)
-  //     .then(({ data }) => {
-  //       setCategories(data);
-  //       setLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, [url]);
+  const url = "http://localhost:4000/categories/"
 
   const [store, dispatch] = useReducer(categoryReducer, initialState);
 
   const getCategories = useCallback(async () => {
-    console.log('FETCHING --->>> StudentList')
+    console.log('FETCHING --->>> Categories')
     dispatch({ type: CategoryActionTypes.SET_LOADING })
-    const res = await axios.get(url);
+    const res = await axios
+      .get(url)
+      .catch((error) => {
+        console.log(error);
+        dispatch({
+          type: CategoryActionTypes.SET_ERROR,
+          payload: error
+        });
+    
+    });;
     dispatch({
       type: CategoryActionTypes.SET_LIST,
       payload: res.data,
@@ -59,6 +56,7 @@ const FORM_MODES = {
 export const CategoryActionTypes = {
   SET_LOADING: 'SET_LOADING',
   SET_LIST: 'SET_LIST',
+  SET_ERROR: 'SET_ERROR',
   ADD: 'ADD',
   EDIT: 'EDIT',
   CLOSE_FORM: 'CLOSE_FORM'
@@ -71,7 +69,11 @@ function categoryReducer(state, action) {
     }
 
     case CategoryActionTypes.SET_LIST: {
-      return { ...state, categories: action.payload };
+      return { ...state, categories: action.payload, loading: false };
+    }
+
+    case CategoryActionTypes.SET_ERROR: {
+      return { ...state, error: action.payload, loading: false };
     }
 
     case CategoryActionTypes.ADD: {
@@ -81,9 +83,11 @@ function categoryReducer(state, action) {
     case CategoryActionTypes.EDIT: {
       return { ...state, mode: FORM_MODES.EDIT, _id: action._id };
     }
+
     case CategoryActionTypes.CLOSE_FORM: {
       return { ...state, mode: null, _id: null };
     }
+
     default: {
       throw Error('Unknown action: ' + action.type);
     }

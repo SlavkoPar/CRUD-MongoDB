@@ -5,7 +5,7 @@ let bodyParser = require('body-parser');
 let dbConfig = require('./database/db');
 
 // Express Route
-const studentRoute = require('../backend/routes/student.route')
+const categoryRoute = require('../backend/routes/category.route')
 
 // Configure mongoDB Database
 // mongoose.set('useNewUrlParser', true);
@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(cors());
-app.use('/students', studentRoute)
+app.use('/categories', categoryRoute)
 
 
 // PORT

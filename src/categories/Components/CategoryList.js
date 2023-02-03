@@ -5,15 +5,12 @@ import CategoryRow from "./CategoryRow";
 import { CategoryActionTypes, useCategoryContext, useCategoryDispatch } from "../CategoryProvider";
 
 const CategoryList = () => {
-    //const [page, setPage] = useState(1);
     const { store, getCategories } = useCategoryContext();
-    // const [categories, setCategories] = useState([]);
     const dispatch = useCategoryDispatch();
-    // const url = "http://localhost:4000/students/"
     useEffect(() => {
         getCategories();
     }, [getCategories]);
-    console.log('RENDERING StudentList')
+    console.log('RENDERING CategoryList')
 
     const add = () => {
         dispatch({ type: CategoryActionTypes.ADD })
@@ -23,7 +20,7 @@ const CategoryList = () => {
         <div className="table-wrapper">
             <Button variant="secondary" size="sm" onClick={add}
                 block="block" type="button">
-                Add Student
+                Add Category
             </Button>
 
             <Table striped bordered hover>

@@ -2,18 +2,19 @@ import React from "react";
 import { Button } from "react-bootstrap";
 import axios from "axios";
 
-import { CategoryActionTypes, useCategoryDispatch } from '../CategoryProvider'
+import { CategoryActionTypes, useCategoryContext, useCategoryDispatch } from '../CategoryProvider'
 
 const CategoryRow = ({category}) => {
     const { _id, name, email, rollno } = category;
+    const { getCategories } = useCategoryContext();
 
-    const deleteStudent = () => {
+    const deleteCategory = () => {
         axios
-            .delete("http://localhost:4000/students/delete-student/" + _id)
+            .delete("http://localhost:4000/categories/delete-category/" + _id)
             .then((res) => {
                 if (res.status === 200) {
-                    alert("Student successfully deleted");
-                    // window.location.reload();
+                    console.log("Category successfully deleted");
+                    getCategories()
                 } else Promise.reject();
             })
             .catch((err) => alert("Something went wrong"));
@@ -26,7 +27,6 @@ const CategoryRow = ({category}) => {
             <td>{email}</td>
             <td>{rollno}</td>
             <td>
-                {/* <Button size="sm" className="ms-2" onClick={() => dispatch({ type: 'EDIT_STUDENT', _id })}> */}
                 <Button size="sm" className="ms-2" 
                     onClick={() => { 
                         dispatch({ type: CategoryActionTypes.EDIT, _id })}
@@ -34,7 +34,7 @@ const CategoryRow = ({category}) => {
                 Edit
                 </Button>
                 <Button 
-                    onClick={deleteStudent} size="sm" variant="danger">
+                    onClick={deleteCategory} size="sm" variant="danger">
                     Delete
                 </Button>
             </td>
