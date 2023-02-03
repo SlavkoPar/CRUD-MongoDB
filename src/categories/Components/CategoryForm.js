@@ -2,15 +2,14 @@ import React from "react";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { FormGroup, FormControl, Button, CloseButton } from "react-bootstrap";
-import { useStore, useStoreDispatch } from '../../StoreProvider'
+import { CategoryActionTypes, useCategoryDispatch } from "../CategoryProvider";
   
-const StudentForm = (props) => {
+const CategoryForm = (props) => {
 
-  //const dispatch = useStoreDispatch();
+  const dispatch = useCategoryDispatch();
 
   const closeForm = () => {
-    //dispatch({ type: 'CLOSE_STUDENT' })
-    props.setMode(null)
+    dispatch({ type: CategoryActionTypes.CLOSE_FORM })
   }
 
   const validationSchema = Yup.object().shape({
@@ -71,4 +70,4 @@ const StudentForm = (props) => {
   );
 };
   
-export default StudentForm;
+export default CategoryForm;

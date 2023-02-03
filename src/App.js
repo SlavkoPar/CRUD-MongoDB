@@ -1,7 +1,6 @@
-// Import React
+
 import React from "react";
 
-// Import Bootstrap
 import { Nav, Navbar, Container, Row, Col } from "react-bootstrap";
 
 // Import Custom CSS
@@ -14,7 +13,8 @@ import {
 } from "react-router-dom";
 
 // Import other React Component
-import Students from "./students/Students";
+import { CategoryProvider } from "./categories/CategoryProvider";
+import Categories from "./categories/Categories"
 
 // App Component
 const App = () => {
@@ -25,24 +25,15 @@ const App = () => {
           <Navbar bg="dark" variant="dark">
             <Container>
               <Navbar.Brand>
-                <Link to={"/students"}
-                  className="nav-link">
-                  Students
+                <Link to={"/categories"} className="nav-link">
+                  Categories
                 </Link>
               </Navbar.Brand>
 
               <Nav className="justify-content-end">
-                {/* <Nav>
-                  <Link to={"/create-student"}
-                    className="nav-link">
-                    Create Student
-                  </Link>
-                </Nav> */}
-
                 <Nav>
-                  <Link to={"/students"}
-                    className="nav-link">
-                    Students
+                  <Link to={"/categories"} className="nav-link">
+                    Categories
                   </Link>
                 </Nav>
               </Nav>
@@ -55,8 +46,8 @@ const App = () => {
             <Col md={12}>
               <div className="wrapper">
                 <Routes>
-                  <Route exact path="/" element={<Students/>} />
-                  <Route path="/students" element={<Students />} />
+                  <Route exact path="/" element={<CategoryProvider><Categories /></CategoryProvider>} />
+                  <Route path="/categories" element={<CategoryProvider><Categories /></CategoryProvider>} />
                 </Routes>
               </div>
             </Col>

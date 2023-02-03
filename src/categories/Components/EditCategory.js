@@ -1,14 +1,18 @@
 //import { useParams } from 'react-router-dom'
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import StudentForm from "./StudentForm";
+import { CategoryActionTypes, useCategoryContext, useCategoryDispatch } from '../CategoryProvider'
 
+import CategoryForm from "./CategoryForm";
 
-const EditStudent = ({setMode, _id}) => {
+const EditCategory = () => {
 
     //const { id } = useParams();
+
+    const { store, getCategories } = useCategoryContext();
+    const dispatch = useCategoryDispatch();
     
-    const url = `http://localhost:4000/students/update-student/${_id}`;
+    const url = `http://localhost:4000/students/update-student/${store._id}`;
 
     const [formValues, setFormValues] = useState({
         name: "",
@@ -21,12 +25,14 @@ const EditStudent = ({setMode, _id}) => {
             .put(url, studentObject)
             .then((res) => {
                 if (res.status === 200) {
-                    alert("Student successfully updated");
+                    console.log("Category successfully updated");
+                    getCategories()
                     //props.history.push("/student-list");
                 } 
                 else Promise.reject();
             })
             .catch((err) => alert("Something went wrong"));
+        dispatch({ type: CategoryActionTypes.CLOSE_FORM })
     };
 
     // Load data from server and reinitialize student form
@@ -42,16 +48,15 @@ const EditStudent = ({setMode, _id}) => {
 
     // Return student form
     return (
-        <StudentForm
+        <CategoryForm
             initialValues={formValues}
             onSubmit={onSubmit}
             enableReinitialize
-            setMode={setMode}
         >
             Update Student
-        </StudentForm>
+        </CategoryForm>
     );
 };
 
 // Export EditStudent Component
-export default EditStudent;
+export default EditCategory;

@@ -1,28 +1,22 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Table, Button } from "react-bootstrap";
-import StudentRow from "./StudentRow";
+import CategoryRow from "./CategoryRow";
+import { CategoryActionTypes, useCategoryContext, useCategoryDispatch } from "../CategoryProvider";
 
-const StudentList = ({ setMode, setId }) => {
-    const [page, setPage] = useState(1);
-    const [students, setStudents] = useState([]);
-
-    const url = "http://localhost:4000/students/"
+const CategoryList = () => {
+    //const [page, setPage] = useState(1);
+    const { store, getCategories } = useCategoryContext();
+    // const [categories, setCategories] = useState([]);
+    const dispatch = useCategoryDispatch();
+    // const url = "http://localhost:4000/students/"
     useEffect(() => {
-        console.log('FETCHING StudentList')
-        axios
-            .get(url)
-            .then(({ data }) => {
-                setStudents(data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }, [url, page]);
+        getCategories();
+    }, [getCategories]);
     console.log('RENDERING StudentList')
 
     const add = () => {
-        setMode('add')
+        dispatch({ type: CategoryActionTypes.ADD })
     }
 
     return (
@@ -42,11 +36,13 @@ const StudentList = ({ setMode, setId }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {students.map((student, i) => <StudentRow student={student} key={i} setMode={setMode} setId={setId} />)}
+                    {store.categories.map((category, i) => <CategoryRow category={category} key={category._id} />)}
                 </tbody>
             </Table>
+            {store.loading && "Loading"}
+            {store.error && store.error}
         </div>
     );
 };
 
-export default StudentList;
+export default CategoryList;

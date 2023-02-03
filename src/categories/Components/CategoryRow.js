@@ -2,10 +2,10 @@ import React from "react";
 import { Button } from "react-bootstrap";
 import axios from "axios";
 
-//import { useStore, useStoreDispatch } from '../../StoreProvider'
+import { CategoryActionTypes, useCategoryDispatch } from '../CategoryProvider'
 
-const StudentRow = ({student, setMode, setId}) => {
-    const { _id, name, email, rollno } = student;
+const CategoryRow = ({category}) => {
+    const { _id, name, email, rollno } = category;
 
     const deleteStudent = () => {
         axios
@@ -18,11 +18,8 @@ const StudentRow = ({student, setMode, setId}) => {
             })
             .catch((err) => alert("Something went wrong"));
     };
-
-      
-    // const store = useStore();
-    //const dispatch = useStoreDispatch();
-
+   
+    const dispatch = useCategoryDispatch();
     return (
         <tr>
             <td>{name}</td>
@@ -30,10 +27,14 @@ const StudentRow = ({student, setMode, setId}) => {
             <td>{rollno}</td>
             <td>
                 {/* <Button size="sm" className="ms-2" onClick={() => dispatch({ type: 'EDIT_STUDENT', _id })}> */}
-                <Button size="sm" className="ms-2" onClick={() => { setId(_id); setMode('edit'); }}>
+                <Button size="sm" className="ms-2" 
+                    onClick={() => { 
+                        dispatch({ type: CategoryActionTypes.EDIT, _id })}
+                }>
                 Edit
                 </Button>
-                <Button onClick={deleteStudent} size="sm" variant="danger">
+                <Button 
+                    onClick={deleteStudent} size="sm" variant="danger">
                     Delete
                 </Button>
             </td>
@@ -41,4 +42,4 @@ const StudentRow = ({student, setMode, setId}) => {
     );
 };
 
-export default StudentRow;
+export default CategoryRow;
