@@ -2,25 +2,25 @@ import React from "react";
 import { Button } from "react-bootstrap";
 import axios from "axios";
 
-import { ActionTypes, useCategoryContext, useCategoryDispatch } from '../Provider'
+import { ActionTypes, useUserContext, useUserDispatch } from '../Provider'
 
-const Row = ({category}) => {
-    const { _id, name, email, rollno } = category;
-    const { getCategories } = useCategoryContext();
+const Row = ({user}) => {
+    const { _id, name, email, rollno } = user;
+    const { getUsers } = useUserContext();
 
-    const deleteCategory = () => {
+    const deleteUser = () => {
         axios
-            .delete(`${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/categories/delete-category/${_id}`)
+            .delete(`${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/users/delete-user/${_id}`)
             .then((res) => {
                 if (res.status === 200) {
-                    console.log("Category successfully deleted");
-                    getCategories()
+                    console.log("User successfully deleted");
+                    getUsers()
                 } else Promise.reject();
             })
             .catch((err) => alert("Something went wrong"));
     };
    
-    const dispatch = useCategoryDispatch();
+    const dispatch = useUserDispatch();
     return (
         <tr>
             <td>{name}</td>
@@ -34,7 +34,7 @@ const Row = ({category}) => {
                 Edit
                 </Button>
                 <Button 
-                    onClick={deleteCategory} size="sm" variant="danger">
+                    onClick={deleteUser} size="sm" variant="danger">
                     Delete
                 </Button>
             </td>

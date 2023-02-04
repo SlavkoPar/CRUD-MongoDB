@@ -3,6 +3,7 @@ let mongoose = require('mongoose');
 let cors = require('cors');
 let bodyParser = require('body-parser');
 let dbConfig = require('./database/db');
+require('dotenv').config();
 
 // Express Route
 const categoryRoute = require('../backend/routes/category.route')
@@ -33,7 +34,7 @@ app.use('/categories', categoryRoute)
 
 
 // PORT
-const port = process.env.PORT || 4000;
+const port = process.env.REACT_APP_PORT || 4000;
 const server = app.listen(port, () => {
     console.log('Connected to port ' + port)
 })

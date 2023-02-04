@@ -1,18 +1,17 @@
 import { createContext, useContext, useState, useReducer, useEffect, useCallback } from 'react';
 import axios from "axios";
 
-const CategoryContext = createContext(null);
-const CategoryDispatchContext = createContext(null);
+const UserContext = createContext(null);
+const UserDispatchContext = createContext(null);
 
 export function Provider({ children }) {
 
-  const url = `${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/categories/`
-  console.log(url)
+  const url = `${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/users/`
 
-  const [store, dispatch] = useReducer(categoryReducer, initialState);
+  const [store, dispatch] = useReducer(userReducer, initialState);
 
-  const getCategories = useCallback(async () => {
-    console.log('FETCHING --->>> Categories')
+  const getUsers = useCallback(async () => {
+    console.log('FETCHING --->>> Users')
     dispatch({ type: ActionTypes.SET_LOADING })
     const res = await axios
       .get(url)
@@ -32,20 +31,20 @@ export function Provider({ children }) {
 
 
   return (
-    <CategoryContext.Provider value={{store, getCategories}}>
-      <CategoryDispatchContext.Provider value={dispatch}>
+    <UserContext.Provider value={{store, getUsers}}>
+      <UserDispatchContext.Provider value={dispatch}>
         {children}
-      </CategoryDispatchContext.Provider>
-    </CategoryContext.Provider>
+      </UserDispatchContext.Provider>
+    </UserContext.Provider>
   );
 }
 
-export function useCategoryContext() {
-  return useContext(CategoryContext);
+export function useUserContext() {
+  return useContext(UserContext);
 }
 
-export const useCategoryDispatch = () => {
-  return useContext(CategoryDispatchContext)
+export const useUserDispatch = () => {
+  return useContext(UserDispatchContext)
 };
 
 const FORM_MODES = {
@@ -63,14 +62,14 @@ export const ActionTypes = {
   CLOSE_FORM: 'CLOSE_FORM'
 }
 
-function categoryReducer(state, action) {
+function userReducer(state, action) {
   switch (action.type) {
     case ActionTypes.SET_LOADING: {
       return { ...state, loading: true };
     }
 
     case ActionTypes.SET_LIST: {
-      return { ...state, categories: action.payload, loading: false };
+      return { ...state, users: action.payload, loading: false };
     }
 
     case ActionTypes.SET_ERROR: {
@@ -99,7 +98,7 @@ export const initialState = {
   mode: FORM_MODES.NULL,
   _id: null,
   loading: true,
-  categories: [],
+  users: [],
   error: null
 }
 

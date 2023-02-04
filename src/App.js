@@ -6,17 +6,11 @@ import { Nav, Navbar, Container, Row, Col } from "react-bootstrap";
 // Import Custom CSS
 import "./App.css";
 
-// Import from react-router-dom
-import {
-  BrowserRouter as Router, Routes,
-  Route, Link
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
-// Import other React Component
-//import { CategoryProvider } from "./categories/CategoryProvider";
 import Categories from "./categories/Categories"
+import Users from "./users/Users"
 
-// App Component
 const App = () => {
   return (
     <Router>
@@ -36,6 +30,11 @@ const App = () => {
                     Categories
                   </Link>
                 </Nav>
+                <Nav>
+                  <Link to={"/users"} className="nav-link">
+                    Users
+                  </Link>
+                </Nav>
               </Nav>
             </Container>
           </Navbar>
@@ -48,6 +47,7 @@ const App = () => {
                 <Routes>
                   <Route exact path="/" element={<Categories />} />
                   <Route path="/categories" element={<Categories />} />
+                  <Route path="/users" element={<Users />} />
                 </Routes>
               </div>
             </Col>

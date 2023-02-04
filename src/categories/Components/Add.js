@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { ActionTypes, useCategoryContext, useCategoryDispatch } from '../Provider'
 
-
 import CategoryForm from "./CategoryForm";
 
 const Add = () => {
@@ -14,7 +13,7 @@ const Add = () => {
     const onSubmit = categoryObject => {
         categoryObject.created = new Date().toISOString();
         axios
-            .post('http://localhost:4000/categories/create-category', categoryObject)
+            .post(`${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/categories/create-category`, categoryObject)
             .then(res => {
                 if (res.status === 200) {
                     console.log('Category successfully created')

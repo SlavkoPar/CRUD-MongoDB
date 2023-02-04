@@ -1,18 +1,18 @@
 //import { useParams } from 'react-router-dom'
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { ActionTypes, useCategoryContext, useCategoryDispatch } from '../Provider'
+import { ActionTypes, useUserContext, useUserDispatch } from '../Provider'
 
-import CategoryForm from "./CategoryForm";
+import UserForm from "./UserForm";
 
 const Edit = () => {
 
     //const { id } = useParams();
 
-    const { store, getCategories } = useCategoryContext();
-    const dispatch = useCategoryDispatch();
+    const { store, getUsers } = useUserContext();
+    const dispatch = useUserDispatch();
     
-    const url = `${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/categories/update-category/${store._id}`
+    const url = `${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/users/update-user/${store._id}`;
 
     const [formValues, setFormValues] = useState({
         name: "",
@@ -20,13 +20,13 @@ const Edit = () => {
         rollno: "",
     });
 
-    const onSubmit = (categoryObject) => {
+    const onSubmit = (userObject) => {
         axios
-            .put(url, categoryObject)
+            .put(url, userObject)
             .then((res) => {
                 if (res.status === 200) {
-                    console.log("Category successfully updated");
-                    getCategories()
+                    console.log("User successfully updated");
+                    getUsers()
                 } 
                 else Promise.reject();
             })
@@ -34,7 +34,7 @@ const Edit = () => {
         dispatch({ type: ActionTypes.CLOSE_FORM })
     };
 
-    // Load data from server and reinitialize category form
+    // Load data from server and reinitialize user form
     useEffect(() => {
         axios
             .get(url)
@@ -49,13 +49,13 @@ const Edit = () => {
     }, [url]);
 
     return (
-        <CategoryForm
+        <UserForm
             initialValues={formValues}
             onSubmit={onSubmit}
             enableReinitialize
         >
-            Update Category
-        </CategoryForm>
+            Update User
+        </UserForm>
     );
 };
 
