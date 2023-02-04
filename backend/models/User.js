@@ -2,8 +2,17 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId
 
-let categorySchema = new Schema({
+let userSchema = new Schema({
     name: {
+        type: String
+    },
+    password: {
+        type: String
+    },
+    role: {
+        type: String
+    },
+    color: {
         type: String
     },
     created: {
@@ -19,7 +28,7 @@ let categorySchema = new Schema({
         type: ObjectId
     },
 }, {
-    collection: 'categories'
+    collection: 'users'
 })
 
-module.exports = mongoose.model('Category', categorySchema)
+module.exports = mongoose.model('User', userSchema)

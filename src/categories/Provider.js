@@ -4,7 +4,7 @@ import axios from "axios";
 const CategoryContext = createContext(null);
 const CategoryDispatchContext = createContext(null);
 
-export function CategoryProvider({ children }) {
+export function Provider({ children }) {
 
   const url = "http://localhost:4000/categories/"
 
@@ -12,19 +12,19 @@ export function CategoryProvider({ children }) {
 
   const getCategories = useCallback(async () => {
     console.log('FETCHING --->>> Categories')
-    dispatch({ type: CategoryActionTypes.SET_LOADING })
+    dispatch({ type: ActionTypes.SET_LOADING })
     const res = await axios
       .get(url)
       .catch((error) => {
         console.log(error);
         dispatch({
-          type: CategoryActionTypes.SET_ERROR,
+          type: ActionTypes.SET_ERROR,
           payload: error
         });
     
     });;
     dispatch({
-      type: CategoryActionTypes.SET_LIST,
+      type: ActionTypes.SET_LIST,
       payload: res.data,
     });
   }, []);
@@ -53,7 +53,7 @@ const FORM_MODES = {
   EDIT: 'edit'
 }
 
-export const CategoryActionTypes = {
+export const ActionTypes = {
   SET_LOADING: 'SET_LOADING',
   SET_LIST: 'SET_LIST',
   SET_ERROR: 'SET_ERROR',
@@ -64,27 +64,27 @@ export const CategoryActionTypes = {
 
 function categoryReducer(state, action) {
   switch (action.type) {
-    case CategoryActionTypes.SET_LOADING: {
+    case ActionTypes.SET_LOADING: {
       return { ...state, loading: true };
     }
 
-    case CategoryActionTypes.SET_LIST: {
+    case ActionTypes.SET_LIST: {
       return { ...state, categories: action.payload, loading: false };
     }
 
-    case CategoryActionTypes.SET_ERROR: {
+    case ActionTypes.SET_ERROR: {
       return { ...state, error: action.payload, loading: false };
     }
 
-    case CategoryActionTypes.ADD: {
+    case ActionTypes.ADD: {
       return { ...state, mode: FORM_MODES.ADD };
     }
 
-    case CategoryActionTypes.EDIT: {
+    case ActionTypes.EDIT: {
       return { ...state, mode: FORM_MODES.EDIT, _id: action._id };
     }
 
-    case CategoryActionTypes.CLOSE_FORM: {
+    case ActionTypes.CLOSE_FORM: {
       return { ...state, mode: null, _id: null };
     }
 

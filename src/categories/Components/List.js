@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { Table, Button } from "react-bootstrap";
-import CategoryRow from "./CategoryRow";
-import { CategoryActionTypes, useCategoryContext, useCategoryDispatch } from "../CategoryProvider";
+import Row from "./Row";
+import { ActionTypes, useCategoryContext, useCategoryDispatch } from "../Provider";
 
-const CategoryList = () => {
+const List = () => {
     const { store, getCategories } = useCategoryContext();
     const dispatch = useCategoryDispatch();
     useEffect(() => {
@@ -13,7 +12,7 @@ const CategoryList = () => {
     console.log('RENDERING CategoryList')
 
     const add = () => {
-        dispatch({ type: CategoryActionTypes.ADD })
+        dispatch({ type: ActionTypes.ADD })
     }
 
     return (
@@ -27,13 +26,13 @@ const CategoryList = () => {
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Email</th>
-                        <th>Roll No</th>
+                        {/* <th>Email</th>
+                        <th>Roll No</th> */}
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {store.categories.map((category, i) => <CategoryRow category={category} key={category._id} />)}
+                    {store.categories.map((category, i) => <Row category={category} key={category._id} />)}
                 </tbody>
             </Table>
             {store.loading && "Loading"}
@@ -42,4 +41,4 @@ const CategoryList = () => {
     );
 };
 
-export default CategoryList;
+export default List;

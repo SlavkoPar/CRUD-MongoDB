@@ -30,7 +30,7 @@ export const ActionTypes = {
 function storeReducer(state, action) {
   switch (action.type) {
     case ActionTypes.AUTHENTICATE: {
-      return {...state, isAuthenticated: true};
+      return { ...state, isAuthenticated: true, user: action.user };
     }
     default: {
       throw Error('Unknown action: ' + action.type);
@@ -39,6 +39,13 @@ function storeReducer(state, action) {
 }
 
 const initialState = {
-  isAuthenticated: null
+  isAuthenticated: null,
+  user: {
+    userId: null,
+    color: null,
+    name: null,
+    roleId: -1,
+    canEdit: false
+  }
 }
 

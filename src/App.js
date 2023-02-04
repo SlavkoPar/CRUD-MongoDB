@@ -13,7 +13,7 @@ import {
 } from "react-router-dom";
 
 // Import other React Component
-import { CategoryProvider } from "./categories/CategoryProvider";
+//import { CategoryProvider } from "./categories/CategoryProvider";
 import Categories from "./categories/Categories"
 
 // App Component
@@ -46,8 +46,8 @@ const App = () => {
             <Col md={12}>
               <div className="wrapper">
                 <Routes>
-                  <Route exact path="/" element={<CategoryProvider><Categories /></CategoryProvider>} />
-                  <Route path="/categories" element={<CategoryProvider><Categories /></CategoryProvider>} />
+                  <Route exact path="/" element={<Categories />} />
+                  <Route path="/categories" element={<Categories />} />
                 </Routes>
               </div>
             </Col>

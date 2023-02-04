@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import { CategoryActionTypes, useCategoryContext, useCategoryDispatch } from '../CategoryProvider'
+import { ActionTypes, useCategoryContext, useCategoryDispatch } from '../Provider'
 
 
 import CategoryForm from "./CategoryForm";
 
-const AddCategory = () => {
-    const [formValues, setFormValues] = useState({ name: '', email: '', rollno: '' })
+const Add = () => {
+    const [formValues, setFormValues] = useState({ name: '', created: null, modified: null })
     
     const { getCategories } = useCategoryContext();
     const dispatch = useCategoryDispatch();
 
     const onSubmit = categoryObject => {
+        categoryObject.created = new Date().toISOString();
         axios
             .post('http://localhost:4000/categories/create-category', categoryObject)
             .then(res => {
@@ -23,7 +24,7 @@ const AddCategory = () => {
                     Promise.reject()
             })
             .catch(err => alert('Something went wrong'))
-            dispatch({ type: CategoryActionTypes.CLOSE_FORM })
+            dispatch({ type: ActionTypes.CLOSE_FORM })
     }
 
     return (
@@ -36,4 +37,4 @@ const AddCategory = () => {
     )
 }
 
-export default AddCategory
+export default Add

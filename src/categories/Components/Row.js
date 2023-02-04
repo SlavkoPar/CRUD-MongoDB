@@ -2,9 +2,9 @@ import React from "react";
 import { Button } from "react-bootstrap";
 import axios from "axios";
 
-import { CategoryActionTypes, useCategoryContext, useCategoryDispatch } from '../CategoryProvider'
+import { ActionTypes, useCategoryContext, useCategoryDispatch } from '../Provider'
 
-const CategoryRow = ({category}) => {
+const Row = ({category}) => {
     const { _id, name, email, rollno } = category;
     const { getCategories } = useCategoryContext();
 
@@ -24,12 +24,12 @@ const CategoryRow = ({category}) => {
     return (
         <tr>
             <td>{name}</td>
-            <td>{email}</td>
-            <td>{rollno}</td>
+            {/* <td>{email}</td>
+            <td>{rollno}</td> */}
             <td>
                 <Button size="sm" className="ms-2" 
                     onClick={() => { 
-                        dispatch({ type: CategoryActionTypes.EDIT, _id })}
+                        dispatch({ type: ActionTypes.EDIT, _id })}
                 }>
                 Edit
                 </Button>
@@ -42,4 +42,4 @@ const CategoryRow = ({category}) => {
     );
 };
 
-export default CategoryRow;
+export default Row;

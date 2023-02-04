@@ -1,27 +1,35 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 
-import { CategoryActionTypes, useCategoryContext, useCategoryDispatch } from "./CategoryProvider";
+import { Provider, ActionTypes, useCategoryContext, useCategoryDispatch } from "./Provider";
 
-import CategoryList from "./Components/CategoryList";
-import AddCategory from "./Components/AddCategory";
-import EditCategory from "./Components/EditCategory";
+import List from "./Components/List";
+import Add from "./Components/Add";
+import Edit from "./Components/Edit";
 
-const Categories = () => {
+const Providered = () => {
     const { store } = useCategoryContext();
     return (
         <Container>
             <Row>
                 <Col lg={6}>
-                    <CategoryList />
+                    <List />
                 </Col>
                 <Col lg={6}>
-                    {store.mode === 'add' && <AddCategory />}
-                    {store.mode === 'edit' && <EditCategory />}
+                    {store.mode === 'add' && <Add />}
+                    {store.mode === 'edit' && <Edit />}
                 </Col>
             </Row>
         </Container>
     );
 };
+
+const Categories = () => {
+    return (
+        <Provider>
+            <Providered />
+        </Provider>
+    )
+}
 
 export default Categories;
