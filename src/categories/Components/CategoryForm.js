@@ -41,7 +41,7 @@ const CategoryForm = (props) => {
           </FormGroup>
           <FormGroup>
             <label htmlFor="created">Created</label>
-            <Field name="created" type="text" className="form-control" />
+            <Field name="created" type="text" className="form-control" readonly />
             <ErrorMessage
               name="created"
               className="d-block invalid-feedback"
@@ -50,7 +50,7 @@ const CategoryForm = (props) => {
           </FormGroup>
           <FormGroup>
             <label htmlFor="modified">Modified</label>
-            <Field name="modified" type="number" className="form-control" />
+            <Field name="modified" type="text" className="form-control" readonly />
             <ErrorMessage
               name="modified"
               className="d-block invalid-feedback"

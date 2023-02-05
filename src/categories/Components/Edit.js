@@ -21,6 +21,7 @@ const Edit = () => {
     });
 
     const onSubmit = (categoryObject) => {
+        categoryObject.modified = new Date().toISOString();
         axios
             .put(url, categoryObject)
             .then((res) => {
@@ -42,7 +43,7 @@ const Edit = () => {
                 let { name, created, modified } = res.data;
                 created = new Date(created).toLocaleDateString() + " " + new Date(created).toLocaleTimeString()
                 if (modified)
-                    modified = new Date(modified).toLocaleDateString() + " " + new Date(created).toLocaleTimeString()
+                    modified = new Date(modified).toLocaleDateString() + " " + new Date(modified).toLocaleTimeString()
                 setFormValues({ name, created, modified });
             })
             .catch((err) => console.log(err));
