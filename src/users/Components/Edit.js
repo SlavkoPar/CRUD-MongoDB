@@ -1,7 +1,7 @@
 //import { useParams } from 'react-router-dom'
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { ActionTypes, useUserContext, useUserDispatch } from '../Provider'
+import { hostPort, ActionTypes, useUserContext, useUserDispatch } from '../Provider'
 
 import UserForm from "./UserForm";
 
@@ -12,12 +12,10 @@ const Edit = () => {
     const { store, getUsers } = useUserContext();
     const dispatch = useUserDispatch();
     
-    const url = `${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/users/update-user/${store._id}`;
+    const url = `${hostPort}/users/update-user/${store._id}`;
 
     const [formValues, setFormValues] = useState({
-        name: "",
-        email: "",
-        rollno: "",
+        userName: ""
     });
 
     const onSubmit = (userObject) => {
@@ -51,6 +49,7 @@ const Edit = () => {
     return (
         <UserForm
             initialValues={formValues}
+            isEdit={true}
             onSubmit={onSubmit}
             enableReinitialize
         >

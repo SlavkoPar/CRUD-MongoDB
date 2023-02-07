@@ -9,15 +9,15 @@ let categorySchema = new Schema({
     created: {
         type: Date
     },
-    modified: {
-        type: Date
-    },
     createdBy: {
         type: ObjectId
     },
+    modified: {
+        type: Date
+    },
     modifiedBy: {
         type: ObjectId
-    },
+    }
 }, {
     collection: 'categories'
 })

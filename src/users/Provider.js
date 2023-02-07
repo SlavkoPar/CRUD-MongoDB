@@ -4,31 +4,40 @@ import axios from "axios";
 const UserContext = createContext(null);
 const UserDispatchContext = createContext(null);
 
-export function Provider({ children }) {
+export const hostPort = `${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}`
 
-  const url = `${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/users/`
+export const ActionTypes = {
+  SET_LOADING: 'SET_LOADING',
+  SET_LIST: 'SET_LIST',
+  SET_ERROR: 'SET_ERROR',
+  ADD: 'ADD',
+  EDIT: 'EDIT',
+  CLOSE_FORM: 'CLOSE_FORM'
+}
+
+export const FORM_MODES = {
+  NULL: null,
+  ADD: 'add',
+  EDIT: 'edit'
+}
+export function Provider({ children }) {
 
   const [store, dispatch] = useReducer(userReducer, initialState);
 
-  const getUsers = useCallback(async () => {
+  const url = `${hostPort}/users/`
+  const getUsers = useCallback(() => {
     console.log('FETCHING --->>> Users')
     dispatch({ type: ActionTypes.SET_LOADING })
-    const res = await axios
+    axios
       .get(url)
+      .then(({data}) => { 
+        dispatch({ type: ActionTypes.SET_LIST, payload: data });
+      })
       .catch((error) => {
         console.log(error);
-        dispatch({
-          type: ActionTypes.SET_ERROR,
-          payload: error
-        });
-    
-    });;
-    dispatch({
-      type: ActionTypes.SET_LIST,
-      payload: res.data,
+        dispatch({ type: ActionTypes.SET_ERROR, payload: error });
     });
-  }, []);
-
+  }, [url]);
 
   return (
     <UserContext.Provider value={{store, getUsers}}>
@@ -47,20 +56,6 @@ export const useUserDispatch = () => {
   return useContext(UserDispatchContext)
 };
 
-const FORM_MODES = {
-  NULL: null,
-  ADD: 'add',
-  EDIT: 'edit'
-}
-
-export const ActionTypes = {
-  SET_LOADING: 'SET_LOADING',
-  SET_LIST: 'SET_LIST',
-  SET_ERROR: 'SET_ERROR',
-  ADD: 'ADD',
-  EDIT: 'EDIT',
-  CLOSE_FORM: 'CLOSE_FORM'
-}
 
 function userReducer(state, action) {
   switch (action.type) {

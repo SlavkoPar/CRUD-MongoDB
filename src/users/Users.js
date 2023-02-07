@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 
-import { Provider, ActionTypes, useUserContext, useUserDispatch } from "./Provider";
+import { Provider, useUserContext } from "./Provider";
 
 import List from "./Components/List";
 import Add from "./Components/Add";

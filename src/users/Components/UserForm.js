@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { FormGroup, FormControl, Button, CloseButton } from "react-bootstrap";
 import { ActionTypes, useUserDispatch } from "../Provider";
-  
+
 const UserForm = (props) => {
 
   const dispatch = useUserDispatch();
@@ -13,7 +13,7 @@ const UserForm = (props) => {
   }
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required("Required"),
+    userName: Yup.string().required("Required"),
     // email: Yup.string()
     //   .email("You have enter an invalid email address")
     //   .required("Required"),
@@ -27,43 +27,59 @@ const UserForm = (props) => {
 
   return (
     <div className="form-wrapper">
-      <CloseButton onClick={closeForm}/>
+      <CloseButton onClick={closeForm} />
       <Formik {...props} validationSchema={validationSchema}>
         <Form>
           <FormGroup>
-            <label htmlFor="name">Name</label>
-            <Field name="name" type="text" className="form-control" />
+            <label htmlFor="userName">Name</label>
+            <Field name="userName" type="text" className="form-control" />
             <ErrorMessage
-              name="name"
+              name="userName"
               className="d-block invalid-feedback"
               component="span"
             />
           </FormGroup>
+
           <FormGroup>
-            <label htmlFor="created">Created</label>
-            <Field name="created" type="text" className="form-control" />
+            <label htmlFor="role">Name</label>
+            <Field name="role" type="text" className="form-control" />
             <ErrorMessage
-              name="created"
+              name="role"
               className="d-block invalid-feedback"
               component="span"
             />
           </FormGroup>
-          <FormGroup>
-            <label htmlFor="modified">Modified</label>
-            <Field name="modified" type="number" className="form-control" />
-            <ErrorMessage
-              name="modified"
-              className="d-block invalid-feedback"
-              component="span"
-            />
-          </FormGroup>
+
+          {props.isEdit &&
+            <FormGroup>
+              <label htmlFor="created">Created</label>
+              <Field name="created" type="text" className="form-control" />
+              <ErrorMessage
+                name="created"
+                className="d-block invalid-feedback"
+                component="span"
+              />
+            </FormGroup>
+          }
+
+          {props.isEdit &&
+            <FormGroup>
+              <label htmlFor="modified">Modified</label>
+              <Field name="modified" type="number" className="form-control" />
+              <ErrorMessage
+                name="modified"
+                className="d-block invalid-feedback"
+                component="span"
+              />
+            </FormGroup>
+          }
 
           <Button variant="danger" size="sm" onClick={closeForm}
             block="block" type="button">
             Cancel
           </Button>
 
-          <Button variant="primary" size="sm" 
+          <Button variant="primary" size="sm"
             block="block" type="submit">
             {props.children}
           </Button>
@@ -72,5 +88,5 @@ const UserForm = (props) => {
     </div>
   );
 };
-  
+
 export default UserForm;

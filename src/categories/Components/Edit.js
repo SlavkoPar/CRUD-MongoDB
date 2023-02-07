@@ -1,33 +1,37 @@
 //import { useParams } from 'react-router-dom'
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { ActionTypes, useCategoryContext, useCategoryDispatch } from '../Provider'
+import { hostPort, ActionTypes, useCategoryContext, useCategoryDispatch } from '../Provider'
+import { useGlobalStore } from '../../GlobalStoreProvider'
 
 import CategoryForm from "./CategoryForm";
 
 const Edit = () => {
-
-    //const { id } = useParams();
-
+    const globalStore = useGlobalStore();
     const { store, getCategories } = useCategoryContext();
     const dispatch = useCategoryDispatch();
-    
-    const url = `${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/categories/update-category/${store._id}`
 
     const [formValues, setFormValues] = useState({
         name: "",
-        email: "",
-        rollno: "",
+        created: "",
+        modified: "",
+        createdBy_userName: "",
+        modifiedBy_userName: ""
     });
 
+    const url = `${hostPort}/categories/update-category/${store._id}`
     const onSubmit = (categoryObject) => {
-        categoryObject.modified = new Date().toISOString();
+        const object = {
+            ...categoryObject,
+            modified: new Date(),
+            modifiedBy: globalStore.user.userId 
+        }
         axios
-            .put(url, categoryObject)
+            .put(url, object)
             .then((res) => {
                 if (res.status === 200) {
                     console.log("Category successfully updated");
-                    getCategories()
+                    getCategories();
                 } 
                 else Promise.reject();
             })
@@ -35,23 +39,26 @@ const Edit = () => {
         dispatch({ type: ActionTypes.CLOSE_FORM })
     };
 
+    const formatDate  = (date) => date 
+        ? new Date(date).toLocaleDateString() + " " + new Date(date).toLocaleTimeString() 
+        : "";
+
     // Load data from server and reinitialize category form
     useEffect(() => {
         axios
-            .get(url)
-            .then((res) => {
-                let { name, created, modified } = res.data;
-                created = new Date(created).toLocaleDateString() + " " + new Date(created).toLocaleTimeString()
-                if (modified)
-                    modified = new Date(modified).toLocaleDateString() + " " + new Date(modified).toLocaleTimeString()
-                setFormValues({ name, created, modified });
+            .get(`${hostPort}/categories/${store._id}`)
+            .then(({data}) => {
+                data.created = formatDate(data.created)
+                data.modified = formatDate(data.modified)
+                setFormValues(data);
             })
             .catch((err) => console.log(err));
-    }, [url]);
+    }, [store._id]);
 
     return (
         <CategoryForm
             initialValues={formValues}
+            isEdit={true}
             onSubmit={onSubmit}
             enableReinitialize
         >

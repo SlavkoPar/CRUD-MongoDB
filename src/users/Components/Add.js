@@ -1,19 +1,28 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import { ActionTypes, useUserContext, useUserDispatch } from '../Provider'
+import { hostPort, useUserContext, useUserDispatch } from '../Provider'
+import { useGlobalStore } from '../../GlobalStoreProvider'
+import { ActionTypes } from '../Provider'
 
 import UserForm from "./UserForm";
 
 const Add = () => {
-    const [formValues, setFormValues] = useState({ name: '', created: null, modified: null })
     
+    const globalStore = useGlobalStore();
     const { getUsers } = useUserContext();
     const dispatch = useUserDispatch();
 
+    const [formValues, setFormValues] = useState({ userName: '', created: null, modified: null })
+
     const onSubmit = userObject => {
-        userObject.created = new Date().toISOString();
+        const object = {
+            ...userObject,
+            created: new Date(),
+            createdBy: globalStore.user.userId,
+            role: 'FIRST_REGISTERED_USER_IS_OWNER'
+        }
         axios
-            .post(`${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/users/create-user`, userObject)
+            .post(`${hostPort}/users/create-user`, object)
             .then(res => {
                 if (res.status === 200) {
                     console.log('User successfully created')
@@ -27,7 +36,9 @@ const Add = () => {
     }
 
     return (
-        <UserForm initialValues={formValues}
+        <UserForm 
+            initialValues={formValues} 
+            isEdit={false}
             onSubmit={onSubmit}
             enableReinitialize
         >

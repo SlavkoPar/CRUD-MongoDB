@@ -1,19 +1,32 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import { ActionTypes, useCategoryContext, useCategoryDispatch } from '../Provider'
+import { hostPort, ActionTypes, useCategoryContext, useCategoryDispatch } from '../Provider'
+import { useGlobalStore } from '../../GlobalStoreProvider'
 
 import CategoryForm from "./CategoryForm";
 
 const Add = () => {
-    const [formValues, setFormValues] = useState({ name: '', created: null, modified: null })
+    const globalStore = useGlobalStore();
+    const [formValues, setFormValues] = useState({ 
+        name: '', 
+        modified: null,
+        modifiedBy: null,
+        created: null,
+        createdBy: globalStore.user.userId
+    })
     
-    const { getCategories } = useCategoryContext();
+    const { store, getCategories } = useCategoryContext();
     const dispatch = useCategoryDispatch();
 
     const onSubmit = categoryObject => {
-        categoryObject.created = new Date().toISOString();
+        const object = {
+            ...categoryObject,
+            created: new Date(),
+            createdBy: globalStore.user.userId
+        }
+           
         axios
-            .post(`${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/categories/create-category`, categoryObject)
+            .post(`${hostPort}/categories/create-category`, object)
             .then(res => {
                 if (res.status === 200) {
                     console.log('Category successfully created')
@@ -27,7 +40,9 @@ const Add = () => {
     }
 
     return (
-        <CategoryForm initialValues={formValues}
+        <CategoryForm
+            initialValues={formValues}
+            isEdit={false}
             onSubmit={onSubmit}
             enableReinitialize
         >

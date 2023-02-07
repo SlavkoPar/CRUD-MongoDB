@@ -6,6 +6,7 @@ let dbConfig = require('./database/db');
 require('dotenv').config();
 
 // Express Route
+const userRoute = require('../backend/routes/user.route')
 const categoryRoute = require('../backend/routes/category.route')
 
 // Configure mongoDB Database
@@ -13,6 +14,7 @@ const categoryRoute = require('../backend/routes/category.route')
 // mongoose.set('useFindAndModify', false);
 // mongoose.set('useCreateIndex', true);
 // mongoose.set('useUnifiedTopology', true);
+mongoose.set('strictQuery', false);
 
 // Connecting MongoDB Database
 mongoose.Promise = global.Promise;
@@ -30,8 +32,8 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(cors());
+app.use('/users', userRoute)
 app.use('/categories', categoryRoute)
-
 
 // PORT
 const port = process.env.REACT_APP_PORT || 4000;
