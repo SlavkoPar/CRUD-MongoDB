@@ -18,11 +18,11 @@ const App = () => {
         <header className="App-header">
           <Navbar bg="dark" variant="dark">
             <Container>
-              <Navbar.Brand>
+              {/* <Navbar.Brand>
                 <Link to={"/categories"} className="nav-link">
                   Categories
                 </Link>
-              </Navbar.Brand>
+              </Navbar.Brand> */}
 
               <Nav className="justify-content-end">
                 <Nav>
