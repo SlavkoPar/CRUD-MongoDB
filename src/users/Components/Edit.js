@@ -4,6 +4,7 @@ import axios from "axios";
 import { hostPort, ActionTypes, useUserContext, useUserDispatch } from '../Provider'
 
 import UserForm from "./UserForm";
+import { ROLES } from "../../GlobalStoreProvider";
 
 const Edit = () => {
 
@@ -11,12 +12,21 @@ const Edit = () => {
 
     const { store, getUsers } = useUserContext();
     const dispatch = useUserDispatch();
-    
+
     const url = `${hostPort}/users/update-user/${store._id}`;
 
     const [formValues, setFormValues] = useState({
-        userName: ""
+        userName: "",
+        role: ROLES.VIEWER,
+        created: "",
+        modified: "",
+        createdBy_userName: "",
+        modifiedBy_userName: ""
     });
+
+    const formatDate = (date) => date
+        ? new Date(date).toLocaleDateString() + " " + new Date(date).toLocaleTimeString()
+        : "";
 
     const onSubmit = (userObject) => {
         axios
@@ -25,7 +35,7 @@ const Edit = () => {
                 if (res.status === 200) {
                     console.log("User successfully updated");
                     getUsers()
-                } 
+                }
                 else Promise.reject();
             })
             .catch((err) => alert("Something went wrong"));
@@ -35,16 +45,14 @@ const Edit = () => {
     // Load data from server and reinitialize user form
     useEffect(() => {
         axios
-            .get(url)
-            .then((res) => {
-                let { name, created, modified } = res.data;
-                created = new Date(created).toLocaleDateString() + " " + new Date(created).toLocaleTimeString()
-                if (modified)
-                    modified = new Date(modified).toLocaleDateString() + " " + new Date(created).toLocaleTimeString()
-                setFormValues({ name, created, modified });
+            .get(`${hostPort}/users/${store._id}`)
+            .then(({ data }) => {
+                data.created = formatDate(data.created)
+                data.modified = formatDate(data.modified)
+                setFormValues(data);
             })
             .catch((err) => console.log(err));
-    }, [url]);
+    }, [store._id]);
 
     return (
         <UserForm

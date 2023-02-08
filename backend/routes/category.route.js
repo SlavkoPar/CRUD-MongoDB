@@ -4,7 +4,6 @@ let mongoose = require("mongoose"),
 
 const ObjectId = mongoose.Types.ObjectId
 
-
 let categorySchema = require("../models/Category");
 
 // CREATE Category
@@ -21,62 +20,78 @@ router.post("/create-category", (req, res, next) => {
 
 const pipeline = [
     {
-        $lookup: {
-            from: "users",
-            localField: "createdBy",
-            foreignField: "_id",
-            as: "fromUsers",
-        },
+      $lookup: {
+        from: "users",
+        localField: "createdBy",
+        foreignField: "_id",
+        as: "fromUsers",
+      },
     },
     {
-        $lookup:
-        {
-            from: "users",
-            localField: "modifiedBy",
-            foreignField: "_id",
-            as: "fromUsers2",
-        },
+      $lookup: {
+        from: "users",
+        localField: "modifiedBy",
+        foreignField: "_id",
+        as: "fromUsers2",
+      },
     },
     {
-        $replaceRoot: {
-            newRoot: {
-                $mergeObjects: [
-                    {
-                        $arrayElemAt: ["$fromUsers", 0],
-                    },
-                    {
-                        $arrayElemAt: ["$fromUsers2", 0],
-                    },
-                    "$$ROOT",
-                ],
+      $replaceRoot: {
+        newRoot: {
+          $mergeObjects: [
+            {
+              $arrayElemAt: ["$fromUsers", 0],
             },
+            {
+              $cond: [
+                {
+                  $gt: [
+                    {
+                      $size: "$fromUsers2",
+                    },
+                    0,
+                  ],
+                },
+                {
+                  $arrayElemAt: ["$fromUsers2", 0],
+                },
+                null
+              ],
+            },
+            "$$ROOT",
+          ],
         },
+      },
     },
     {
-        $project:
+      $project:
         {
-            name: 1,
-            createdBy_userName: "$userName",
-            role: 1,
-            created: 1,
-            modified: 1,
-            modifiedBy_userName: {
-                $cond: [
-                    {
-                        $gt: [
-                            {
-                                $size: "$fromUsers2",
-                            },
-                            0,
-                        ],
-                    },
-                    "$fromUsers2",
-                    '' //'Unspecified'
+          name: 1,
+          createdBy_userName: "$userName", // moze $fromUsers.userName
+          role: 1,
+          created: 1,
+          modified: 1,
+          modifiedBy_user: {
+            $cond: [
+              {
+                $gt: [
+                  {
+                    $size: "$fromUsers2",
+                  },
+                  0,
                 ],
-            },
+              },
+              {
+                $arrayElemAt: ["$fromUsers2", 0],
+              },
+              {
+                userName: "Unspecified"
+              },
+            ],
+          },
         },
     },
-]
+  ]
 
 // Get Categories
 // router.get("/", (req, res, next) => {

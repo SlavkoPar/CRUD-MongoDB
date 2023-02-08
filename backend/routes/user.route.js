@@ -2,6 +2,8 @@ let mongoose = require("mongoose"),
     express = require("express"),
     router = express.Router();
 
+const ObjectId = mongoose.Types.ObjectId
+
 let userSchema = require("../models/User");
 
 // CREATE User
@@ -21,6 +23,66 @@ router.post("/create-user", (req, res, next) => {
     });
 });
 
+
+const pipeline = [
+    {
+        $lookup: {
+            from: "users",
+            localField: "createdBy",
+            foreignField: "_id",
+            as: "fromUsers",
+        },
+    },
+    {
+        $lookup:
+        {
+            from: "users",
+            localField: "modifiedBy",
+            foreignField: "_id",
+            as: "fromUsers2",
+        },
+    },
+    {
+        $replaceRoot: {
+            newRoot: {
+                $mergeObjects: [
+                    {
+                        $arrayElemAt: ["$fromUsers", 0],
+                    },
+                    {
+                        $arrayElemAt: ["$fromUsers2", 0],
+                    },
+                    "$$ROOT",
+                ],
+            },
+        },
+    },
+    {
+        $project:
+        {
+            userName: 1, // only dif from catgories pipeline
+            createdBy_userName: "$userName",
+            role: 1,
+            created: 1,
+            modified: 1,
+            modifiedBy_userName: {
+                $cond: [
+                    {
+                        $gt: [
+                            {
+                                $size: "$fromUsers2",
+                            },
+                            0,
+                        ],
+                    },
+                    "$fromUsers2",
+                    '' //'Unspecified'
+                ],
+            },
+        },
+    },
+]
+
 // READ Users
 router.get("/", (req, res, next) => {
     userSchema.find((error, data) => {
@@ -31,6 +93,26 @@ router.get("/", (req, res, next) => {
         }
     });
 });
+
+// Get Single User
+router
+    .route("/:id")
+    .get((req, res, next) => {
+        userSchema.aggregate([
+            {
+                $match: {
+                    _id: ObjectId(req.params.id),
+                }
+            },
+            ...pipeline
+        ], (error, data) => {
+            if (error) {
+                return next(error);
+            } else {
+                res.json(data[0]);
+            }
+        });
+    })
 
 // UPDATE User
 router

@@ -50,6 +50,7 @@ export function Provider({ children }) {
     axios
       .get(url)
       .then(({data}) => { 
+        console.log(data)
         dispatch({ type: ActionTypes.SET_LIST, payload: data });
       })
       .catch((error) => {

@@ -48,8 +48,9 @@ const Edit = () => {
         axios
             .get(`${hostPort}/categories/${store._id}`)
             .then(({data}) => {
-                data.created = formatDate(data.created)
-                data.modified = formatDate(data.modified)
+                data.created = formatDate(data.created);
+                data.modified = formatDate(data.modified);
+                data.modifiedBy_userName = data.modifiedBy_user.userName;
                 setFormValues(data);
             })
             .catch((err) => console.log(err));
