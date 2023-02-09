@@ -3,9 +3,9 @@ import axios from 'axios';
 import { hostPort, ActionTypes, useCategoryContext, useCategoryDispatch } from '../Provider'
 import { useGlobalStore } from '../../GlobalStoreProvider'
 
-import CategoryForm from "./CategoryForm";
+import SubCategoryForm from "./SubCategoryForm";
 
-const Add = () => {
+const AddSubCategory = () => {
     const globalStore = useGlobalStore();
     const [formValues, setFormValues] = useState({ 
         name: '', 
@@ -18,21 +18,21 @@ const Add = () => {
     const { store, getCategories } = useCategoryContext();
     const dispatch = useCategoryDispatch();
 
-    const onSubmit = categoryObject => {
+    const onSubmit = subCategoryObject => {
         const object = {
-            ...categoryObject,
-            parentCategory: null,
-            level: 1,
+            parentCategory: store.category._id,
+            level: store.category.level + 1,
+            ...subCategoryObject,
             created: new Date(),
             createdBy: globalStore.user.userId
         }
            
         axios
-            .post(`${hostPort}/categories/create-category`, object)
+            .post(`${hostPort}/categories/create-subcategory`, object)
             .then(res => {
                 if (res.status === 200) {
-                    console.log('Category successfully created')
-                    //getCategories()
+                    console.log('SubCategory successfully created')
+                    // getCategories()
                 }
                 else
                     Promise.reject()
@@ -42,15 +42,16 @@ const Add = () => {
     }
 
     return (
-        <CategoryForm
+        <SubCategoryForm
+            category={store.category}
             initialValues={formValues}
             isEdit={false}
             onSubmit={onSubmit}
             enableReinitialize
         >
-            Create Category
-        </CategoryForm>
+            Create SubCategory
+        </SubCategoryForm>
     )
 }
 
-export default Add
+export default AddSubCategory

@@ -76,11 +76,11 @@ function userReducer(state, action) {
     }
 
     case ActionTypes.EDIT: {
-      return { ...state, mode: FORM_MODES.EDIT, _id: action._id };
+      return { ...state, mode: FORM_MODES.EDIT, user: action.user };
     }
 
     case ActionTypes.CLOSE_FORM: {
-      return { ...state, mode: null, _id: null };
+      return { ...state, mode: null, user: null };
     }
 
     default: {
@@ -91,7 +91,7 @@ function userReducer(state, action) {
 
 export const initialState = {
   mode: FORM_MODES.NULL,
-  _id: null,
+  user: null,
   loading: true,
   users: [],
   error: null

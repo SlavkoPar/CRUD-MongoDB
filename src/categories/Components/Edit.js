@@ -19,7 +19,7 @@ const Edit = () => {
         modifiedBy_userName: ""
     });
 
-    const url = `${hostPort}/categories/update-category/${store._id}`
+    const url = `${hostPort}/categories/update-category/${store.category._id}`
     const onSubmit = (categoryObject) => {
         const object = {
             ...categoryObject,
@@ -31,7 +31,7 @@ const Edit = () => {
             .then((res) => {
                 if (res.status === 200) {
                     console.log("Category successfully updated");
-                    getCategories();
+                    //getCategories();
                 } 
                 else Promise.reject();
             })
@@ -46,7 +46,7 @@ const Edit = () => {
     // Load data from server and reinitialize category form
     useEffect(() => {
         axios
-            .get(`${hostPort}/categories/${store._id}`)
+            .get(`${hostPort}/categories/get-category/${store.category._id}`)
             .then(({data}) => {
                 data.created = formatDate(data.created);
                 data.modified = formatDate(data.modified);
@@ -54,7 +54,7 @@ const Edit = () => {
                 setFormValues(data);
             })
             .catch((err) => console.log(err));
-    }, [store._id]);
+    }, [store.category._id]);
 
     return (
         <CategoryForm

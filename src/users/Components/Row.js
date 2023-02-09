@@ -4,7 +4,7 @@ import axios from "axios";
 
 import { hostPort, ActionTypes, useUserContext, useUserDispatch } from '../Provider'
 
-const Row = ({user}) => {
+const Row = ({ user }) => {
     const { _id, userName } = user;
     const { getUsers } = useUserContext();
 
@@ -19,19 +19,18 @@ const Row = ({user}) => {
             })
             .catch((err) => alert("Something went wrong"));
     };
-   
+
     const dispatch = useUserDispatch();
     return (
         <tr>
             <td>{userName}</td>
             <td>
-                <Button size="sm" className="ms-2" 
-                    onClick={() => { 
-                        dispatch({ type: ActionTypes.EDIT, _id })}
-                }>
-                Edit
+                <Button size="sm" className="ms-2"
+                    onClick={() => { dispatch({ type: ActionTypes.EDIT, user }) }}
+                >
+                    Edit
                 </Button>
-                <Button 
+                <Button
                     onClick={deleteUser} size="sm" variant="danger">
                     Delete
                 </Button>

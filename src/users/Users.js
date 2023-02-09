@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 
-import { Provider, useUserContext } from "./Provider";
+import { Provider, useUserContext, FORM_MODES } from "./Provider";
 
 import List from "./Components/List";
 import Add from "./Components/Add";
@@ -16,8 +16,8 @@ const Providered = () => {
                     <List />
                 </Col>
                 <Col lg={6}>
-                    {store.mode === 'add' && <Add />}
-                    {store.mode === 'edit' && <Edit />}
+                    {store.mode === FORM_MODES.ADD && <Add />}
+                    {store.mode === FORM_MODES.EDIT && <Edit />}
                 </Col>
             </Row>
         </Container>

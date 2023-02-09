@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { hostPort, useUserContext, useUserDispatch } from '../Provider'
-import { useGlobalStore } from '../../GlobalStoreProvider'
+import { useGlobalStore, ROLES } from '../../GlobalStoreProvider'
+
 import { ActionTypes } from '../Provider'
 
 import UserForm from "./UserForm";
@@ -12,7 +13,7 @@ const Add = () => {
     const { getUsers } = useUserContext();
     const dispatch = useUserDispatch();
 
-    const [formValues, setFormValues] = useState({ userName: '', created: null, modified: null })
+    const [formValues, setFormValues] = useState({ userName: '', role: ROLES.VIEWER, created: null, modified: null })
 
     const onSubmit = userObject => {
         const object = {

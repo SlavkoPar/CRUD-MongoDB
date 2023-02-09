@@ -3,17 +3,21 @@ import axios from "axios";
 
 export const ActionTypes = {
   SET_LOADING: 'SET_LOADING',
-  SET_LIST: 'SET_LIST',
+  SET_SUBCATEGORIES: 'SET_SUBCATEGORIES',
+  SET_CATEGORIES: 'SET_LIST',
+  REMOVE_CHILDREN: 'REMOVE_CHILDREN',
   SET_ERROR: 'SET_ERROR',
   ADD: 'ADD',
+  ADD_SUBCATEGORY: 'ADD_SUBCATEGORY',
   EDIT: 'EDIT',
   CLOSE_FORM: 'CLOSE_FORM'
 }
 
 export const FORM_MODES = {
   NULL: null,
-  ADD: 'add',
-  EDIT: 'edit'
+  ADD: 'ADD',
+  ADD_SUBCATEGORY: 'ADD_SUBCATEGORY',
+  EDIT: 'EDIT'
 }
 
 const CategoryContext = createContext(null);
@@ -23,27 +27,10 @@ export const hostPort = `${process.env.REACT_APP_HOST}:${process.env.REACT_APP_P
 
 export function Provider({ children }) {
 
-  const url = `${hostPort}/categories/`
-  console.log(url)
 
   const [store, dispatch] = useReducer(categoryReducer, initialState);
 
-  // const getCategories = useCallback(async () => {
-  //   console.log('FETCHING --->>> Categories')
-  //   dispatch({ type: ActionTypes.SET_LOADING })
-  //   const res = await axios
-  //     .get(url)
-  //     .catch((error) => {
-  //       console.log(error);
-  //       dispatch({
-  //         type: ActionTypes.SET_ERROR,
-  //         payload: error
-  //       });
-    
-  //   });
-  //   dispatch({ type: ActionTypes.SET_LIST, payload: res.data });
-  // }, [url]);
-
+  const url = `${hostPort}/categories/`
   const getCategories = useCallback(() => {
     console.log('FETCHING --->>> Categories')
     dispatch({ type: ActionTypes.SET_LOADING })
@@ -51,7 +38,7 @@ export function Provider({ children }) {
       .get(url)
       .then(({data}) => { 
         console.log(data)
-        dispatch({ type: ActionTypes.SET_LIST, payload: data });
+        dispatch({ type: ActionTypes.SET_CATEGORIES, payload: data });
       })
       .catch((error) => {
         console.log(error);
@@ -59,8 +46,24 @@ export function Provider({ children }) {
     });
   }, [url]);
 
+  const getSubCategories = useCallback(({parentCategory, level}) => {
+    const urlSubCategories = `${hostPort}/categories/${parentCategory}`
+    console.log('FETCHING --->>> getSubCategories', level, parentCategory)
+    dispatch({ type: ActionTypes.SET_LOADING })
+    axios
+      .get(urlSubCategories)
+      .then(({data}) => { 
+        console.log(data)
+        dispatch({ type: ActionTypes.SET_SUBCATEGORIES, payload: data });
+      })
+      .catch((error) => {
+        console.log(error);
+        dispatch({ type: ActionTypes.SET_ERROR, payload: error });
+    });
+  }, []);
+
   return (
-    <CategoryContext.Provider value={{store, getCategories}}>
+    <CategoryContext.Provider value={{store, getCategories, getSubCategories}}>
       <CategoryDispatchContext.Provider value={dispatch}>
         {children}
       </CategoryDispatchContext.Provider>
@@ -82,8 +85,16 @@ function categoryReducer(state, action) {
       return { ...state, loading: true };
     }
 
-    case ActionTypes.SET_LIST: {
+    case ActionTypes.SET_CATEGORIES: {
       return { ...state, categories: action.payload, loading: false };
+    }
+
+    case ActionTypes.SET_SUBCATEGORIES: {
+      return { 
+        ...state, 
+        subCategories: state.subCategories.concat(action.payload),
+        loading: false 
+      };
     }
 
     case ActionTypes.SET_ERROR: {
@@ -94,12 +105,16 @@ function categoryReducer(state, action) {
       return { ...state, mode: FORM_MODES.ADD };
     }
 
+    case ActionTypes.ADD_SUBCATEGORY: {
+      return { ...state, mode: FORM_MODES.ADD_SUBCATEGORY, category: action.category };
+    }
+
     case ActionTypes.EDIT: {
-      return { ...state, mode: FORM_MODES.EDIT, _id: action._id };
+      return { ...state, mode: FORM_MODES.EDIT, category: action.category };
     }
 
     case ActionTypes.CLOSE_FORM: {
-      return { ...state, mode: null, _id: null };
+      return { ...state, mode: null, category: null };
     }
 
     default: {
@@ -110,9 +125,10 @@ function categoryReducer(state, action) {
 
 export const initialState = {
   mode: FORM_MODES.NULL,
-  _id: null,
+  category: null,
   loading: true,
   categories: [],
+  subCategories: [],
   error: null
 }
 

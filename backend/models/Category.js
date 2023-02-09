@@ -17,7 +17,14 @@ let categorySchema = new Schema({
     },
     modifiedBy: {
         type: ObjectId
+    },
+    level: {
+        type: Number
+    },
+    parentCategory: {
+        type: ObjectId
     }
+
 }, {
     collection: 'categories'
 })

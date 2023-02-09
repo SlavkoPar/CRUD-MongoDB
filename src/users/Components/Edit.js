@@ -13,7 +13,7 @@ const Edit = () => {
     const { store, getUsers } = useUserContext();
     const dispatch = useUserDispatch();
 
-    const url = `${hostPort}/users/update-user/${store._id}`;
+    const url = `${hostPort}/users/update-user/${store.user._id}`;
 
     const [formValues, setFormValues] = useState({
         userName: "",
@@ -45,14 +45,14 @@ const Edit = () => {
     // Load data from server and reinitialize user form
     useEffect(() => {
         axios
-            .get(`${hostPort}/users/${store._id}`)
+            .get(`${hostPort}/users/${store.user._id}`)
             .then(({ data }) => {
                 data.created = formatDate(data.created)
                 data.modified = formatDate(data.modified)
                 setFormValues(data);
             })
             .catch((err) => console.log(err));
-    }, [store._id]);
+    }, [store.user._id]);
 
     return (
         <UserForm
