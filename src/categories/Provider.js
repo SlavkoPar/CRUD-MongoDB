@@ -1,11 +1,12 @@
 import { createContext, useContext, useState, useReducer, useEffect, useCallback } from 'react';
 import axios from "axios";
+import { isDOMComponent } from 'react-dom/test-utils';
 
 export const ActionTypes = {
   SET_LOADING: 'SET_LOADING',
   SET_SUBCATEGORIES: 'SET_SUBCATEGORIES',
   SET_CATEGORIES: 'SET_LIST',
-  REMOVE_CHILDREN: 'REMOVE_CHILDREN',
+  CLEAN_SUB_TREE: 'CLEAN_SUB_TREE',
   SET_ERROR: 'SET_ERROR',
   ADD: 'ADD',
   ADD_SUBCATEGORY: 'ADD_SUBCATEGORY',
@@ -36,34 +37,34 @@ export function Provider({ children }) {
     dispatch({ type: ActionTypes.SET_LOADING })
     axios
       .get(url)
-      .then(({data}) => { 
+      .then(({ data }) => {
         console.log(data)
         dispatch({ type: ActionTypes.SET_CATEGORIES, payload: data });
       })
       .catch((error) => {
         console.log(error);
         dispatch({ type: ActionTypes.SET_ERROR, payload: error });
-    });
+      });
   }, [url]);
 
-  const getSubCategories = useCallback(({parentCategory, level}) => {
+  const getSubCategories = useCallback(({ parentCategory, level }) => {
     const urlSubCategories = `${hostPort}/categories/${parentCategory}`
     console.log('FETCHING --->>> getSubCategories', level, parentCategory)
     dispatch({ type: ActionTypes.SET_LOADING })
     axios
       .get(urlSubCategories)
-      .then(({data}) => { 
+      .then(({ data }) => {
         console.log(data)
         dispatch({ type: ActionTypes.SET_SUBCATEGORIES, payload: data });
       })
       .catch((error) => {
         console.log(error);
         dispatch({ type: ActionTypes.SET_ERROR, payload: error });
-    });
+      });
   }, []);
 
   return (
-    <CategoryContext.Provider value={{store, getCategories, getSubCategories}}>
+    <CategoryContext.Provider value={{ store, getCategories, getSubCategories }}>
       <CategoryDispatchContext.Provider value={dispatch}>
         {children}
       </CategoryDispatchContext.Provider>
@@ -79,6 +80,16 @@ export const useCategoryDispatch = () => {
   return useContext(CategoryDispatchContext)
 };
 
+function markForClean(subCategories, parent_id) {
+  let arr = subCategories
+    .filter(category => category.parentCategory === parent_id)
+
+  arr.forEach(category => {
+    arr = arr.concat(markForClean(subCategories, category._id))
+  })
+  return arr
+}
+
 function categoryReducer(state, action) {
   switch (action.type) {
     case ActionTypes.SET_LOADING: {
@@ -90,12 +101,24 @@ function categoryReducer(state, action) {
     }
 
     case ActionTypes.SET_SUBCATEGORIES: {
-      return { 
-        ...state, 
+      return {
+        ...state,
         subCategories: state.subCategories.concat(action.payload),
-        loading: false 
+        loading: false
       };
     }
+
+    case ActionTypes.CLEAN_SUB_TREE: {
+      const { _id } = action.category;
+      const arr = markForClean(state.subCategories, _id)
+      console.log('clean:', arr)
+      const _ids = arr.map(c => c._id)
+      return {
+        ...state,
+        subCategories: state.subCategories.filter(c => !_ids.includes(c._id))
+      }
+    }
+
 
     case ActionTypes.SET_ERROR: {
       return { ...state, error: action.payload, loading: false };

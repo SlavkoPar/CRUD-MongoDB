@@ -13,7 +13,7 @@ const CategoryRow = ({ category }) => {
 
     const dispatch = useCategoryDispatch();
 
-    const [isExpanded, toggleExpanded] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
 
     const deleteCategory = () => {
         axios
@@ -28,19 +28,24 @@ const CategoryRow = ({ category }) => {
     };
 
     const expand = () => {
-        //const refresh = !isExpanded;
-        toggleExpanded(!isExpanded);
-        //if (refresh)
-        //dispatch({ type: ActionTypes.REMOVE_CHILDREN, category })
+        const refresh = isExpanded;
+        setIsExpanded(!isExpanded);
+        if (refresh)
+            dispatch({ type: ActionTypes.CLEAN_SUB_TREE, category })
     }
 
     return (
         <>
             <tr>
-                <td><FontAwesomeIcon icon={isExpanded ? faCaretDown : faCaretRight} color='orange' size='lg' onClick={expand} /></td>
+                <td>
+                    <FontAwesomeIcon color='orange' size='lg'
+                        icon={isExpanded ? faCaretDown : faCaretRight} 
+                        onClick={expand} 
+                    />
+                </td>
                 <td title={_id}>{name}<div>{_id}</div></td>
                 <td>{level} </td>
-                <td>
+                <td style={{width: 'auto'}}>
                     <Button size="sm" className="ms-2"
                         onClick={() => { dispatch({ type: ActionTypes.EDIT, category }) }}>
                         Edit
