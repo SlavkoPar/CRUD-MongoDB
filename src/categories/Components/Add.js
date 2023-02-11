@@ -4,52 +4,62 @@ import { hostPort, ActionTypes, useCategoryContext, useCategoryDispatch } from '
 import { useGlobalStore } from '../../GlobalStoreProvider'
 
 import CategoryForm from "./CategoryForm";
+import InLineCategoryForm from "./InLineCategoryForm";
 
-const Add = () => {
+const Add = ({ category, inLine }) => {
     const globalStore = useGlobalStore();
-    const [formValues, setFormValues] = useState({ 
-        name: '', 
-        modified: null,
-        modifiedBy: null,
-        created: null,
-        createdBy: globalStore.user.userId
-    })
-    
-    const { store, getCategories } = useCategoryContext();
+
+    const [formValues, setFormValues] = useState(category)
+
+    const { store, getSubCategories } = useCategoryContext();
     const dispatch = useCategoryDispatch();
 
     const onSubmit = categoryObject => {
+        delete categoryObject._id;
         const object = {
             ...categoryObject,
-            parentCategory: null,
-            level: 1,
             created: new Date(),
             createdBy: globalStore.user.userId
         }
-           
+
         axios
             .post(`${hostPort}/categories/create-category`, object)
-            .then(res => {
-                if (res.status === 200) {
+            .then(({status, data}) => {
+                if (status === 200) {
                     console.log('Category successfully created')
-                    //getCategories()
+                    // getSubCategories(parentCategory)
+                    //refreshAddedCategory(res.data)
+                    dispatch({ type: ActionTypes.REFRESH_ADDED_CATEGORY, data });
                 }
                 else
                     Promise.reject()
             })
             .catch(err => alert('Something went wrong'))
-            dispatch({ type: ActionTypes.CLOSE_FORM })
+        dispatch({ type: ActionTypes.CLOSE_FORM })
     }
 
     return (
-        <CategoryForm
-            initialValues={formValues}
-            isEdit={false}
-            onSubmit={onSubmit}
-            enableReinitialize
-        >
-            Create Category
-        </CategoryForm>
+        <>
+            {inLine ?
+                <InLineCategoryForm
+                    initialValues={formValues}
+                    isEdit={false}
+                    onSubmit={onSubmit}
+                    enableReinitialize
+                >
+                    Add
+                </InLineCategoryForm>
+                :
+                <CategoryForm
+                    initialValues={formValues}
+                    isEdit={false}
+                    onSubmit={onSubmit}
+                    enableReinitialize
+                >
+                    Create Category
+                </CategoryForm >
+            }
+        </>
     )
 }
 

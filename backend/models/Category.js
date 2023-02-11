@@ -29,4 +29,6 @@ let categorySchema = new Schema({
     collection: 'categories'
 })
 
+categorySchema.index({ parentCategory: 1 });   
+
 module.exports = mongoose.model('Category', categorySchema)

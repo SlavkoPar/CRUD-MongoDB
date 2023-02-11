@@ -20,6 +20,9 @@ body h3 {
   max-width: 700px;
 }
 
+td {
+  padding: 2px;   /* TODO redefine bootstrap */
+}
 .edit-link {
   padding: 7px 10px;
   font-size: 0.875rem;

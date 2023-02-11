@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useReducer, useEffect, useCallback } from 'react';
 import axios from "axios";
-import { isDOMComponent } from 'react-dom/test-utils';
 
 export const ActionTypes = {
   SET_LOADING: 'SET_LOADING',
@@ -10,6 +9,7 @@ export const ActionTypes = {
   SET_ERROR: 'SET_ERROR',
   ADD: 'ADD',
   ADD_SUBCATEGORY: 'ADD_SUBCATEGORY',
+  REFRESH_ADDED_CATEGORY: 'REFRESH_ADDED_CATEGORY',
   EDIT: 'EDIT',
   CLOSE_FORM: 'CLOSE_FORM'
 }
@@ -28,24 +28,23 @@ export const hostPort = `${process.env.REACT_APP_HOST}:${process.env.REACT_APP_P
 
 export function Provider({ children }) {
 
-
   const [store, dispatch] = useReducer(categoryReducer, initialState);
 
-  const url = `${hostPort}/categories/`
-  const getCategories = useCallback(() => {
-    console.log('FETCHING --->>> Categories')
-    dispatch({ type: ActionTypes.SET_LOADING })
-    axios
-      .get(url)
-      .then(({ data }) => {
-        console.log(data)
-        dispatch({ type: ActionTypes.SET_CATEGORIES, payload: data });
-      })
-      .catch((error) => {
-        console.log(error);
-        dispatch({ type: ActionTypes.SET_ERROR, payload: error });
-      });
-  }, [url]);
+  // const url = `${hostPort}/categories/`
+  // const getCategories = useCallback(() => {
+  //   console.log('FETCHING --->>> Categories')
+  //   dispatch({ type: ActionTypes.SET_LOADING })
+  //   axios
+  //     .get(url)
+  //     .then(({ data }) => {
+  //       console.log(data)
+  //       dispatch({ type: ActionTypes.SET_CATEGORIES, payload: data });
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       dispatch({ type: ActionTypes.SET_ERROR, payload: error });
+  //     });
+  // }, [url]);
 
   const getSubCategories = useCallback(({ parentCategory, level }) => {
     const urlSubCategories = `${hostPort}/categories/${parentCategory}`
@@ -63,8 +62,26 @@ export function Provider({ children }) {
       });
   }, []);
 
+  /*
+  const refreshAddedCategory = useCallback((_id) => {
+    const url = `${hostPort}/categories/get-category/${_id}`
+    console.log(`FETCHING --->>> ${url}`)
+    dispatch({ type: ActionTypes.SET_LOADING })
+    axios
+      .get(url)
+      .then(({ data }) => {
+        console.log(data)
+        dispatch({ type: ActionTypes.REFRESH_ADDED_CATEGORY, data });
+      })
+      .catch((error) => {
+        console.log(error);
+        dispatch({ type: ActionTypes.SET_ERROR, payload: error });
+      });
+  }, []);
+  */
+
   return (
-    <CategoryContext.Provider value={{ store, getCategories, getSubCategories }}>
+    <CategoryContext.Provider value={{ store, getSubCategories }}>
       <CategoryDispatchContext.Provider value={dispatch}>
         {children}
       </CategoryDispatchContext.Provider>
@@ -88,6 +105,17 @@ function markForClean(subCategories, parent_id) {
     arr = arr.concat(markForClean(subCategories, category._id))
   })
   return arr
+}
+
+export const initialCategory = {
+  _id: 'for_list_key_mongo_given', // just for list key, real _id will given by the MongoDB 
+  name: '',
+  level: 0,
+  created: null,
+  createdBy: null,
+  modified: null,
+  modifiedBy: null,
+  parentCategory: null
 }
 
 function categoryReducer(state, action) {
@@ -119,17 +147,52 @@ function categoryReducer(state, action) {
       }
     }
 
-
     case ActionTypes.SET_ERROR: {
       return { ...state, error: action.payload, loading: false };
     }
 
     case ActionTypes.ADD: {
-      return { ...state, mode: FORM_MODES.ADD };
+      const { createdBy } = action;
+      return {
+        ...state,
+        mode: FORM_MODES.ADD,
+        subCategories: [
+          {
+            ...initialCategory,
+            createdBy,
+            level: 1,
+            inAdding: true
+          },
+          ...state.subCategories
+        ]
+      };
     }
 
     case ActionTypes.ADD_SUBCATEGORY: {
-      return { ...state, mode: FORM_MODES.ADD_SUBCATEGORY, category: action.category };
+      const { category, createdBy } = action;
+      return {
+        ...state,
+        mode: FORM_MODES.ADD_SUBCATEGORY,
+        subCategories: [
+          {
+            ...initialCategory,
+            level: category.level + 1,
+            parentCategory: category._id,
+            createdBy,
+            inAdding: true
+          },
+          ...state.subCategories
+        ]
+      };
+    }
+
+    case ActionTypes.REFRESH_ADDED_CATEGORY: {
+      const { data } = action;
+      return {
+        ...state,
+        subCategories: state.subCategories.map( c => c.inAdding ? data : c ),
+        inAdding: false
+      }
     }
 
     case ActionTypes.EDIT: {
