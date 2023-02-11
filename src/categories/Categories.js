@@ -6,7 +6,6 @@ import { Provider, useCategoryContext, FORM_MODES, ActionTypes, useCategoryDispa
 
 import TreeView from "./Components/TreeView";
 import Add from "./Components/Add";
-//import AddSubCategory from "./Components/AddSubCategory";
 import Edit from "./Components/Edit";
 
 const Providered = () => {
@@ -21,7 +20,11 @@ const Providered = () => {
         <>
             <Button variant="secondary" size="sm" block="block" type="button"
                 onClick={() => dispatch({ 
-                        type: ActionTypes.ADD, 
+                        type: ActionTypes.ADD,
+                        category: {
+                            _id: null,
+                            level: 0
+                        }, 
                         createdBy: globalStore.user.userId 
                     })
                 }

@@ -38,8 +38,6 @@ const CategoryRow = ({ category }) => {
             dispatch({ type: ActionTypes.CLEAN_SUB_TREE, category })
     }
 
-    // console.log(store.mode, FORM_MODES.ADD_SUBCATEGORY, store.mode === FORM_MODES.ADD_SUBCATEGORY)
-
     return (
         <>
             {inAdding
@@ -63,14 +61,14 @@ const CategoryRow = ({ category }) => {
                                     Edit
                                 </Button>
                                 <Button
-                                    onClick={deleteCategory} size="sm" variant="danger">
+                                    onClick={deleteCategory} size="sm" className="ms-2" variant="danger">
                                     Delete
                                 </Button>
                                 <Button size="sm" className="ms-2" title="Add SubCategory" >
                                     <FontAwesomeIcon icon={faPlus} color='orange' size='sm'
                                         onClick={() => {
                                             dispatch({
-                                                type: ActionTypes.ADD_SUBCATEGORY,
+                                                type: ActionTypes.ADD,
                                                 category,
                                                 createdBy: globalStore.user.userId
                                             })

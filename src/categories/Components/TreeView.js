@@ -27,7 +27,9 @@ const TreeView = ({ parentCategory, level }) => {
                 <tbody>
                     {
                         store.subCategories
-                            .filter(category => category.parentCategory === parentCategory) // category.level === level &&
+                            .filter(category => 
+                                category.parentCategory === parentCategory
+                            )
                             .map(category => 
                                 <CategoryRow category={category} key={category._id} /> 
                             )

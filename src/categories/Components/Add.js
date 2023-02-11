@@ -47,7 +47,7 @@ const Add = ({ category, inLine }) => {
                     onSubmit={onSubmit}
                     enableReinitialize
                 >
-                    Add
+                    Create
                 </InLineCategoryForm>
                 :
                 <CategoryForm

@@ -8,7 +8,6 @@ export const ActionTypes = {
   CLEAN_SUB_TREE: 'CLEAN_SUB_TREE',
   SET_ERROR: 'SET_ERROR',
   ADD: 'ADD',
-  ADD_SUBCATEGORY: 'ADD_SUBCATEGORY',
   REFRESH_ADDED_CATEGORY: 'REFRESH_ADDED_CATEGORY',
   EDIT: 'EDIT',
   CLOSE_FORM: 'CLOSE_FORM'
@@ -17,7 +16,6 @@ export const ActionTypes = {
 export const FORM_MODES = {
   NULL: null,
   ADD: 'ADD',
-  ADD_SUBCATEGORY: 'ADD_SUBCATEGORY',
   EDIT: 'EDIT'
 }
 
@@ -151,28 +149,29 @@ function categoryReducer(state, action) {
       return { ...state, error: action.payload, loading: false };
     }
 
-    case ActionTypes.ADD: {
-      const { createdBy } = action;
-      return {
-        ...state,
-        mode: FORM_MODES.ADD,
-        subCategories: [
-          {
-            ...initialCategory,
-            createdBy,
-            level: 1,
-            inAdding: true
-          },
-          ...state.subCategories
-        ]
-      };
-    }
+    // case ActionTypes.ADD: {
+    //   const { createdBy } = action;
+    //   return {
+    //     ...state,
+    //     mode: FORM_MODES.ADD,
+    //     subCategories: [
+    //       {
+    //         ...initialCategory,
+    //         createdBy,
+    //         level: 1,
+    //         inAdding: true
+    //       },
+    //       ...state.subCategories
+    //     ]
+    //   };
+    // }
 
-    case ActionTypes.ADD_SUBCATEGORY: {
+    
+    case ActionTypes.ADD: {
       const { category, createdBy } = action;
       return {
         ...state,
-        mode: FORM_MODES.ADD_SUBCATEGORY,
+        mode: FORM_MODES.ADD,
         subCategories: [
           {
             ...initialCategory,
@@ -185,6 +184,7 @@ function categoryReducer(state, action) {
         ]
       };
     }
+
 
     case ActionTypes.REFRESH_ADDED_CATEGORY: {
       const { data } = action;
