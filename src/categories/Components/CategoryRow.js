@@ -9,9 +9,10 @@ import { useGlobalStore } from '../../GlobalStoreProvider'
 import { hostPort, ActionTypes, FORM_MODES, useCategoryContext, useCategoryDispatch } from '../Provider'
 import TreeView from "./TreeView";
 import Add from "./Add";
+import Edit from "./Edit";
 
 const CategoryRow = ({ category }) => {
-    const { _id, name, level, inAdding } = category;
+    const { _id, name, level, inEditing, inAdding } = category;
 
     const globalStore = useGlobalStore();
     const { store } = useCategoryContext();
@@ -37,13 +38,13 @@ const CategoryRow = ({ category }) => {
         if (refresh)
             dispatch({ type: ActionTypes.CLEAN_SUB_TREE, category })
     }
+    console.log({ inEditing, isExpanded, inAdding })
 
     return (
         <>
-            {inAdding
-                ? (
-                    <Add category={category} inLine={true} />
-                )
+            {inAdding ? (
+                <Add category={category} inLine={true} />
+            )
                 : (
                     <tr>
                         <td>
@@ -83,10 +84,17 @@ const CategoryRow = ({ category }) => {
                 )
             }
 
-            {isExpanded && !inAdding &&
+            {(isExpanded || inEditing) && !inAdding &&
                 <tr>
                     <td colSpan={5} className="px-0 py-0">
-                        <TreeView level={level + 1} parentCategory={_id} />
+                        {inEditing ? (
+                            <div className="mx-3">
+                                <Edit category={category} inLine={true} />
+                            </div>
+                        )
+                            : (
+                                <TreeView level={level + 1} parentCategory={_id} />
+                            )}
                     </td>
                 </tr>
             }

@@ -3,7 +3,6 @@ import axios from "axios";
 
 export const ActionTypes = {
   SET_LOADING: 'SET_LOADING',
-  SET_SUBCATEGORIES: 'SET_SUBCATEGORIES',
   SET_CATEGORIES: 'SET_LIST',
   CLEAN_SUB_TREE: 'CLEAN_SUB_TREE',
   SET_ERROR: 'SET_ERROR',
@@ -28,31 +27,15 @@ export function Provider({ children }) {
 
   const [store, dispatch] = useReducer(categoryReducer, initialState);
 
-  // const url = `${hostPort}/categories/`
-  // const getCategories = useCallback(() => {
-  //   console.log('FETCHING --->>> Categories')
-  //   dispatch({ type: ActionTypes.SET_LOADING })
-  //   axios
-  //     .get(url)
-  //     .then(({ data }) => {
-  //       console.log(data)
-  //       dispatch({ type: ActionTypes.SET_CATEGORIES, payload: data });
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //       dispatch({ type: ActionTypes.SET_ERROR, payload: error });
-  //     });
-  // }, [url]);
-
-  const getSubCategories = useCallback(({ parentCategory, level }) => {
-    const urlSubCategories = `${hostPort}/categories/${parentCategory}`
-    console.log('FETCHING --->>> getSubCategories', level, parentCategory)
+  const getCategories = useCallback(({ parentCategory, level }) => {
+    const urlCategories = `${hostPort}/categories/${parentCategory}`
+    console.log('FETCHING --->>> getCategories', level, parentCategory)
     dispatch({ type: ActionTypes.SET_LOADING })
     axios
-      .get(urlSubCategories)
+      .get(urlCategories)
       .then(({ data }) => {
         console.log(data)
-        dispatch({ type: ActionTypes.SET_SUBCATEGORIES, payload: data });
+        dispatch({ type: ActionTypes.SET_CATEGORIES, payload: data });
       })
       .catch((error) => {
         console.log(error);
@@ -79,7 +62,7 @@ export function Provider({ children }) {
   */
 
   return (
-    <CategoryContext.Provider value={{ store, getSubCategories }}>
+    <CategoryContext.Provider value={{ store, getCategories }}>
       <CategoryDispatchContext.Provider value={dispatch}>
         {children}
       </CategoryDispatchContext.Provider>
@@ -95,12 +78,12 @@ export const useCategoryDispatch = () => {
   return useContext(CategoryDispatchContext)
 };
 
-function markForClean(subCategories, parent_id) {
-  let arr = subCategories
+function markForClean(categories, parent_id) {
+  let arr = categories
     .filter(category => category.parentCategory === parent_id)
 
   arr.forEach(category => {
-    arr = arr.concat(markForClean(subCategories, category._id))
+    arr = arr.concat(markForClean(categories, category._id))
   })
   return arr
 }
@@ -123,25 +106,21 @@ function categoryReducer(state, action) {
     }
 
     case ActionTypes.SET_CATEGORIES: {
-      return { ...state, categories: action.payload, loading: false };
-    }
-
-    case ActionTypes.SET_SUBCATEGORIES: {
       return {
         ...state,
-        subCategories: state.subCategories.concat(action.payload),
+        categories: state.categories.concat(action.payload),
         loading: false
       };
     }
 
     case ActionTypes.CLEAN_SUB_TREE: {
       const { _id } = action.category;
-      const arr = markForClean(state.subCategories, _id)
+      const arr = markForClean(state.categories, _id)
       console.log('clean:', arr)
       const _ids = arr.map(c => c._id)
       return {
         ...state,
-        subCategories: state.subCategories.filter(c => !_ids.includes(c._id))
+        categories: state.categories.filter(c => !_ids.includes(c._id))
       }
     }
 
@@ -149,30 +128,12 @@ function categoryReducer(state, action) {
       return { ...state, error: action.payload, loading: false };
     }
 
-    // case ActionTypes.ADD: {
-    //   const { createdBy } = action;
-    //   return {
-    //     ...state,
-    //     mode: FORM_MODES.ADD,
-    //     subCategories: [
-    //       {
-    //         ...initialCategory,
-    //         createdBy,
-    //         level: 1,
-    //         inAdding: true
-    //       },
-    //       ...state.subCategories
-    //     ]
-    //   };
-    // }
-
-    
     case ActionTypes.ADD: {
       const { category, createdBy } = action;
       return {
         ...state,
         mode: FORM_MODES.ADD,
-        subCategories: [
+        categories: [
           {
             ...initialCategory,
             level: category.level + 1,
@@ -180,7 +141,7 @@ function categoryReducer(state, action) {
             createdBy,
             inAdding: true
           },
-          ...state.subCategories
+          ...state.categories
         ]
       };
     }
@@ -190,13 +151,22 @@ function categoryReducer(state, action) {
       const { data } = action;
       return {
         ...state,
-        subCategories: state.subCategories.map( c => c.inAdding ? data : c ),
-        inAdding: false
+        categories: state.categories.map( c => c.inAdding ? data : c )
+        // treba li ovo inAdding: false
       }
     }
 
     case ActionTypes.EDIT: {
-      return { ...state, mode: FORM_MODES.EDIT, category: action.category };
+      const { category } = action;
+      return { 
+        ...state, 
+        mode: FORM_MODES.EDIT,
+        category, //, inEditing: true }
+        categories: state.categories.map(c => c._id === category._id 
+          ? {...c, inEditing: true} 
+          : c
+        )
+      };
     }
 
     case ActionTypes.CLOSE_FORM: {
@@ -214,7 +184,6 @@ export const initialState = {
   category: null,
   loading: true,
   categories: [],
-  subCategories: [],
   error: null
 }
 

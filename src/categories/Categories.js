@@ -5,7 +5,7 @@ import { useGlobalStore } from '../GlobalStoreProvider'
 import { Provider, useCategoryContext, FORM_MODES, ActionTypes, useCategoryDispatch, initialCategory } from "./Provider";
 
 import TreeView from "./Components/TreeView";
-import Add from "./Components/Add";
+// import Add from "./Components/Add";
 import Edit from "./Components/Edit";
 
 const Providered = () => {
@@ -14,8 +14,6 @@ const Providered = () => {
     const { store } = useCategoryContext();
     const dispatch = useCategoryDispatch();
 
-    console.log({ store })
-    const category = store.subCategories.find(c => c.inAdding);
     return (
         <>
             <Button variant="secondary" size="sm" block="block" type="button"
@@ -33,12 +31,12 @@ const Providered = () => {
             </Button>
             <Container>
                 <Row>
-                    <Col lg={6}>
-                        <div>  {/*style={{maxHeight:'75vh', overflowY: 'auto '}}*/}
+                    <Col sm={12} lg={6}>
+                        <div>
                             <TreeView parentCategory={null} level={1} />
                         </div>
                     </Col>
-                    <Col lg={6}>
+                    <Col sm={0} lg={6}> {/* className="d-none d-lg-block"> */}
                         {/* {store.mode === FORM_MODES.ADD && <Add category={category??initialCategory} />} */}
                         {store.mode === FORM_MODES.EDIT && <Edit />}
                     </Col>

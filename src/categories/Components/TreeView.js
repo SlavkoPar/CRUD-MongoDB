@@ -5,11 +5,10 @@ import CategoryRow from "./CategoryRow";
 import { ActionTypes, useCategoryContext, useCategoryDispatch } from "../Provider";
 
 const TreeView = ({ parentCategory, level }) => {
-    const { store, getSubCategories } = useCategoryContext();
+    const { store, getCategories } = useCategoryContext();
     useEffect(() => {
-        getSubCategories({ parentCategory, level });
-    }, [level, getSubCategories, parentCategory]);
-    console.log('RENDERING SubCategories', '[' + store.subCategories.length + ']', level, parentCategory)
+        getCategories({ parentCategory, level });
+    }, [level, getCategories, parentCategory]);
 
     return (
         <div className={`table-wrapper ms-2`}>
@@ -26,7 +25,7 @@ const TreeView = ({ parentCategory, level }) => {
                 }
                 <tbody>
                     {
-                        store.subCategories
+                        store.categories
                             .filter(category => 
                                 category.parentCategory === parentCategory
                             )
