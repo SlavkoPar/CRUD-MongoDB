@@ -31,14 +31,18 @@ const Providered = () => {
             </Button>
             <Container>
                 <Row>
-                    <Col sm={12} lg={6}>
+                    <Col xs={12} md={6}>
                         <div>
                             <TreeView parentCategory={null} level={1} />
                         </div>
                     </Col>
-                    <Col sm={0} lg={6}> {/* className="d-none d-lg-block"> */}
+                    <Col xs={0} md={6}>
                         {/* {store.mode === FORM_MODES.ADD && <Add category={category??initialCategory} />} */}
-                        {store.mode === FORM_MODES.EDIT && <Edit />}
+                        {/* <div class="d-none d-lg-block">hide on screens smaller than lg</div> */}
+                        <div className="d-none d-md-block">
+                            {store.mode === FORM_MODES.EDIT && <Edit />}
+                        </div>
+
                     </Col>
                 </Row>
             </Container>

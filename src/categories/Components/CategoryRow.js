@@ -88,7 +88,8 @@ const CategoryRow = ({ category }) => {
                 <tr>
                     <td colSpan={5} className="px-0 py-0">
                         {inEditing ? (
-                            <div className="mx-3">
+                            // <div class="d-lg-none">hide on lg and wider screens</div>
+                            <div className="mx-3 d-md-none">
                                 <Edit category={category} inLine={true} />
                             </div>
                         )
