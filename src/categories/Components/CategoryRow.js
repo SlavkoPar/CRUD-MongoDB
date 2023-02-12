@@ -52,10 +52,10 @@ const CategoryRow = ({ category }) => {
                                 onClick={expand}
                             />
                         </td>
-                        <td title={_id}>{name}</td>
+                        <td title={_id} >{name}</td>
                         <td>{level} </td>
                         <td>
-                            <div className="my-0" style={{ padding: 0, margin: 0, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                            <div className="my-0 py-0" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                                 <Button size="sm" className="ms-2"
                                     onClick={() => { dispatch({ type: ActionTypes.EDIT, category }) }}>
                                     Edit
@@ -85,7 +85,7 @@ const CategoryRow = ({ category }) => {
 
             {isExpanded && !inAdding &&
                 <tr>
-                    <td colSpan={5}>
+                    <td colSpan={5} className="px-0 py-0">
                         <TreeView level={level + 1} parentCategory={_id} />
                     </td>
                 </tr>

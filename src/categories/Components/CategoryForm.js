@@ -30,7 +30,7 @@ const CategoryForm = (props) => {
 
   return (
     <div className="form-wrapper">
-      <CloseButton onClick={closeForm} />
+      <CloseButton onClick={closeForm}  className="float-end" />
       <Formik {...props} validationSchema={validationSchema}>
         <Form>
           <FormGroup>

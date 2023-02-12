@@ -10,19 +10,16 @@ body h3 {
   color: #ffffff;
 }
 
-.form-wrapper,
+/* .form-wrapper,
 .table-wrapper {
   max-width: 500px;
   margin: 0 auto;
-}
+} */
 
-.table-wrapper {
+/* .table-wrapper {
   max-width: 700px;
-}
+} */
 
-td {
-  padding: 2px;   /* TODO redefine bootstrap */
-}
 .edit-link {
   padding: 7px 10px;
   font-size: 0.875rem;

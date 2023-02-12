@@ -42,9 +42,9 @@ const InLineCategoryForm = (props) => {
             <FontAwesomeIcon color='orange' size='lg' icon={faCaretRight} />
           </td>
           <td title={_id}>
-            <Form>
+            <Form >
               <FormGroup>
-                <Field name="name" type="text" className="form-control" />
+                <Field name="name" type="text" className="form-control-sm"/>
                 <ErrorMessage
                   name="name"
                   className="d-block invalid-feedback"

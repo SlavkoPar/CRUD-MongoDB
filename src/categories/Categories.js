@@ -33,10 +33,12 @@ const Providered = () => {
             </Button>
             <Container>
                 <Row>
-                    <Col lg={7}>
-                        <TreeView parentCategory={null} level={1} />
+                    <Col lg={6}>
+                        <div>  {/*style={{maxHeight:'75vh', overflowY: 'auto '}}*/}
+                            <TreeView parentCategory={null} level={1} />
+                        </div>
                     </Col>
-                    <Col lg={5}>
+                    <Col lg={6}>
                         {/* {store.mode === FORM_MODES.ADD && <Add category={category??initialCategory} />} */}
                         {store.mode === FORM_MODES.EDIT && <Edit />}
                     </Col>

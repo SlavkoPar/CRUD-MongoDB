@@ -12,8 +12,8 @@ const TreeView = ({ parentCategory, level }) => {
     console.log('RENDERING SubCategories', '[' + store.subCategories.length + ']', level, parentCategory)
 
     return (
-        <div className={`table-wrapper ms-${level * 2}`}>
-            <Table striped bordered hover>
+        <div className={`table-wrapper ms-2`}>
+            <Table striped bordered hover size="sm" className="mb-0">
                 {level === 1 &&
                     <thead>
                         <tr>
