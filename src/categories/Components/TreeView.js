@@ -7,6 +7,7 @@ import { ActionTypes, useCategoryContext, useCategoryDispatch } from "../Provide
 const TreeView = ({ parentCategory, level }) => {
     const { store, getCategories } = useCategoryContext();
     useEffect(() => {
+        console.log('Zovem getCategories', level, parentCategory)
         getCategories({ parentCategory, level });
     }, [level, getCategories, parentCategory]);
 
@@ -18,7 +19,7 @@ const TreeView = ({ parentCategory, level }) => {
                         <tr>
                             <th></th>
                             <th>Name</th>
-                            <th>Level</th>
+                            {/* <th>Level</th> */}
                             <th>Action</th>
                         </tr>
                     </thead>

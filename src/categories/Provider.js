@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const ActionTypes = {
   SET_LOADING: 'SET_LOADING',
-  SET_CATEGORIES: 'SET_LIST',
+  SET_CATEGORIES: 'SET_CATEGORIES',
   CLEAN_SUB_TREE: 'CLEAN_SUB_TREE',
   SET_ERROR: 'SET_ERROR',
   ADD: 'ADD',
@@ -11,6 +11,7 @@ export const ActionTypes = {
   EDIT: 'EDIT',
   DELETE: 'DELETE',
   CLOSE_ADDING_FORM: 'CLOSE_ADDING_FORM',
+  CANCEL_ADDING_FORM: 'CANCEL_ADDING_FORM',
   CLOSE_EDITING_FORM: 'CLOSE_EDITING_FORM'
 }
 
@@ -38,7 +39,7 @@ export function Provider({ children }) {
       .get(urlCategories)
       .then(({ data }) => {
         console.log(data)
-        dispatch({ type: ActionTypes.SET_CATEGORIES, payload: data });
+        dispatch({ type: ActionTypes.SET_CATEGORIES, categories: data });
       })
       .catch((error) => {
         console.log(error);
@@ -65,18 +66,18 @@ export function Provider({ children }) {
   const deleteCategory = _id => {
     // dispatch({ type: ActionTypes.SET_LOADING })
     axios
-        .delete(`${hostPort}/categories/delete-category/${_id}`)
-        .then(res => {
-            if (res.status === 200) {
-                console.log("Category successfully deleted");
-                dispatch({ type: ActionTypes.DELETE, _id });
-            }
-        })
-        .catch((error) => {
-          console.log(error);
-          dispatch({ type: ActionTypes.SET_ERROR, payload: error });
-        });
-};
+      .delete(`${hostPort}/categories/delete-category/${_id}`)
+      .then(res => {
+        if (res.status === 200) {
+          console.log("Category successfully deleted");
+          dispatch({ type: ActionTypes.DELETE, _id });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        dispatch({ type: ActionTypes.SET_ERROR, payload: error });
+      });
+  };
 
   /*
   const refreshAddedCategory = useCallback(_id => {
@@ -135,6 +136,7 @@ export const initialCategory = {
 }
 
 function categoryReducer(state, action) {
+  console.log('action.type', action.type)
   switch (action.type) {
     case ActionTypes.SET_LOADING: {
       return { ...state, loading: true };
@@ -143,7 +145,7 @@ function categoryReducer(state, action) {
     case ActionTypes.SET_CATEGORIES: {
       return {
         ...state,
-        categories: state.categories.concat(action.payload),
+        categories: state.categories.concat(action.categories),
         loading: false
       };
     }
@@ -165,39 +167,44 @@ function categoryReducer(state, action) {
 
     case ActionTypes.ADD: {
       const { category, createdBy } = action;
+      const categories = [
+        {
+          ...initialCategory,
+          level: category.level + 1,
+          parentCategory: category._id,
+          createdBy,
+          inAdding: true
+        },
+        ...state.categories
+      ]
+      console.log('ADD', categories)
       return {
         ...state,
         mode: FORM_MODES.ADD,
-        categories: [
-          {
-            ...initialCategory,
-            level: category.level + 1,
-            parentCategory: category._id,
-            createdBy,
-            inAdding: true
-          },
-          ...state.categories
-        ]
+        categories
       };
     }
 
 
     case ActionTypes.REFRESH_ADDED_CATEGORY: {
+      console.log('REFRESH_ADDED_CATEGORY', state.categories)
       const { data } = action;
       return {
         ...state,
+        mode: FORM_MODES.NULL,
+        category: null,
         categories: state.categories.map(c => c.inAdding ? data : c)
       }
     }
 
     case ActionTypes.EDIT: {
       const { category } = action;
-      return { 
-        ...state, 
+      return {
+        ...state,
         mode: FORM_MODES.EDIT,
-        category, 
-        categories: state.categories.map(c => c._id === category._id 
-          ? {...category, inEditing: true} 
+        category,
+        categories: state.categories.map(c => c._id === category._id
+          ? { ...category, inEditing: true }
           : c
         ),
         loading: false
@@ -206,29 +213,38 @@ function categoryReducer(state, action) {
 
     case ActionTypes.DELETE: {
       const _id = action._id;
-      return { 
-        ...state, 
-        mode: FORM_MODES.NULL, 
+      return {
+        ...state,
+        mode: FORM_MODES.NULL,
         category: null,
         categories: state.categories.filter(c => c._id !== _id)
       };
     }
 
     case ActionTypes.CLOSE_ADDING_FORM: {
-      return { 
-        ...state, 
-        mode: FORM_MODES.NULL, 
+      return {
+        ...state,
+        mode: FORM_MODES.NULL,
+        category: null
+      };
+    }
+    case ActionTypes.CANCEL_ADDING_FORM: {
+      return {
+        ...state,
+        mode: FORM_MODES.NULL,
         category: null,
-        categories: state.categories.filter(c => !c.inAdding )
+        categories: state.categories.filter(c => !c.inAdding)
       };
     }
 
+    
+
     case ActionTypes.CLOSE_EDITING_FORM: {
-      return { 
-        ...state, 
-        mode: FORM_MODES.NULL, 
+      return {
+        ...state,
+        mode: FORM_MODES.NULL,
         category: null,
-        categories: state.categories.map(c => c.inEditing ? ({...c, inEditing: false}) : c)
+        categories: state.categories.map(c => c.inEditing ? ({ ...c, inEditing: false }) : c)
       };
     }
 

@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { FormGroup } from "react-bootstrap";
@@ -14,8 +14,8 @@ const InLineCategoryForm = (props) => {
 
   const dispatch = useCategoryDispatch();
 
-  const closeForm = () => {
-    dispatch({ type: ActionTypes.CLOSE_ADDING_FORM,  })
+  const cancelForm = () => {
+    dispatch({ type: props.isEdit ? ActionTypes.CANCEL_EDITING_FORM : ActionTypes.CANCEL_ADDING_FORM })
   }
 
   const validationSchema = Yup.object().shape({
@@ -31,38 +31,42 @@ const InLineCategoryForm = (props) => {
 
   console.log(props);
   const formRef = useRef();
+  const nameRef = useRef();
+
+  useEffect(() => {
+    nameRef.current.focus()
+  }, [])
 
   return (
     // <div className="form-wrapper">
     // <CloseButton onClick={closeForm} />
 
     <Formik {...props} validationSchema={validationSchema} innerRef={formRef}>
-        <tr>
-          <td>
-            <FontAwesomeIcon color='orange' size='lg' icon={faCaretRight} />
-          </td>
-          <td title={_id}>
-            <Form >
-              <FormGroup>
-                <Field name="name" type="text" className="form-control-sm"/>
-                <ErrorMessage
-                  name="name"
-                  className="d-block invalid-feedback"
-                  component="span"
-                />
-              </FormGroup>
-            </Form>
-          </td>
-          <td>{level} </td>
-          <td>
-            <FormButtons 
-              closeForm={closeForm} 
-              title={props.children}
-              inLine={true}
-              handleSubmit={() => formRef.current.handleSubmit()} 
-            />
-          </td>
-        </tr >
+      <tr>
+        <td>
+          <FontAwesomeIcon color='orange' size='lg' icon={faCaretRight} />
+        </td>
+        <td title={_id}>
+          <Form >
+            <FormGroup>
+              <Field name="name" type="text" className="form-control" innerRef={nameRef} />
+              <ErrorMessage
+                name="name"
+                className="d-block invalid-feedback"
+                component="span"
+              />
+            </FormGroup>
+          </Form>
+        </td>
+        <td>
+          <FormButtons
+            cancelForm={cancelForm}
+            title={props.children}
+            inLine={true}
+            handleSubmit={() => formRef.current.handleSubmit()}
+          />
+        </td>
+      </tr >
     </Formik>
 
     // </div>

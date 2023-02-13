@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useRef } from "react";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { FormGroup, CloseButton } from "react-bootstrap";
@@ -27,15 +27,22 @@ const CategoryForm = (props) => {
   });
 
   console.log(props);
+  const formRef = useRef();
+  const nameRef = useRef();
+  useEffect(()=> {
+    nameRef.current.focus()
+  }, [])
+
+
 
   return (
     <div className="form-wrapper">
       <CloseButton onClick={closeForm}  className="float-end" />
-      <Formik {...props} validationSchema={validationSchema}>
+      <Formik {...props} validationSchema={validationSchema} innerRef={formRef}>
         <Form>
           <FormGroup>
             <label className="form-label" htmlFor="name">Name</label>
-            <Field name="name" type="text" className="form-control" /> {/*form-control-sm*/}
+            <Field name="name" type="text" className="form-control" innerRef={nameRef} /> {/*form-control-sm*/}
             <ErrorMessage
               name="name"
               className="d-block invalid-feedback"
@@ -44,7 +51,9 @@ const CategoryForm = (props) => {
           </FormGroup>
 
           {props.isEdit && <CreatedModifiedForm modified={props.initialValues.modified} /> }
-          <FormButtons closeForm={closeForm} title={props.children} />
+          <FormButtons 
+            closeForm={closeForm}
+            handleSubmit={() => formRef.current.handleSubmit()} title={props.children} />
         </Form>
       </Formik>
     </div>

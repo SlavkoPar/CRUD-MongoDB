@@ -51,7 +51,7 @@ const CategoryRow = ({ category }) => {
                             />
                         </td>
                         <td title={_id} >{name}</td>
-                        <td>{level} </td>
+                        {/* <td>{level} </td> */}
                         <td>
                             <div className="my-0 py-0" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                                 <Button size="sm" className="ms-2"
@@ -86,7 +86,7 @@ const CategoryRow = ({ category }) => {
 
             {(isExpanded || inEditing) && !inAdding &&
                 <tr>
-                    <td colSpan={5} className="px-0 py-0">
+                    <td colSpan={4} className="px-0 py-0">
                         {inEditing ? ( // store.mode === FORM_MODES.EDIT &&
                             // <div class="d-lg-none">hide on lg and wider screens</div>
                             <div className="mx-3 d-md-none">
