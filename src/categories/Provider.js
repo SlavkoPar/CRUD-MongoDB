@@ -9,6 +9,7 @@ export const ActionTypes = {
   ADD: 'ADD',
   REFRESH_ADDED_CATEGORY: 'REFRESH_ADDED_CATEGORY',
   EDIT: 'EDIT',
+  DELETE: 'DELETE',
   CLOSE_ADDING_FORM: 'CLOSE_ADDING_FORM',
   CLOSE_EDITING_FORM: 'CLOSE_EDITING_FORM'
 }
@@ -16,7 +17,8 @@ export const ActionTypes = {
 export const FORM_MODES = {
   NULL: null,
   ADD: 'ADD',
-  EDIT: 'EDIT'
+  EDIT: 'EDIT',
+  DELETE: 'DELETE'
 }
 
 const CategoryContext = createContext(null);
@@ -60,6 +62,22 @@ export function Provider({ children }) {
       });
   }, []);
 
+  const deleteCategory = _id => {
+    // dispatch({ type: ActionTypes.SET_LOADING })
+    axios
+        .delete(`${hostPort}/categories/delete-category/${_id}`)
+        .then(res => {
+            if (res.status === 200) {
+                console.log("Category successfully deleted");
+                dispatch({ type: ActionTypes.DELETE, _id });
+            }
+        })
+        .catch((error) => {
+          console.log(error);
+          dispatch({ type: ActionTypes.SET_ERROR, payload: error });
+        });
+};
+
   /*
   const refreshAddedCategory = useCallback(_id => {
     const url = `${hostPort}/categories/get-category/${_id}`
@@ -79,7 +97,7 @@ export function Provider({ children }) {
   */
 
   return (
-    <CategoryContext.Provider value={{ store, getCategories, editCategory }}>
+    <CategoryContext.Provider value={{ store, getCategories, editCategory, deleteCategory }}>
       <CategoryDispatchContext.Provider value={dispatch}>
         {children}
       </CategoryDispatchContext.Provider>
@@ -183,6 +201,16 @@ function categoryReducer(state, action) {
           : c
         ),
         loading: false
+      };
+    }
+
+    case ActionTypes.DELETE: {
+      const _id = action._id;
+      return { 
+        ...state, 
+        mode: FORM_MODES.NULL, 
+        category: null,
+        categories: state.categories.filter(c => c._id !== _id)
       };
     }
 

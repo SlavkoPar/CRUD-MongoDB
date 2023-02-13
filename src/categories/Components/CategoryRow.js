@@ -15,21 +15,13 @@ const CategoryRow = ({ category }) => {
     const { _id, name, level, inEditing, inAdding } = category;
 
     const globalStore = useGlobalStore();
-    const { store, editCategory } = useCategoryContext();
+    const { store, editCategory, deleteCategory } = useCategoryContext();
     const dispatch = useCategoryDispatch();
 
     const [isExpanded, setIsExpanded] = useState(false);
 
-    const deleteCategory = () => {
-        axios
-            .delete(`${hostPort}/categories/delete-category/${_id}`)
-            .then((res) => {
-                if (res.status === 200) {
-                    console.log("Category successfully deleted");
-                    // getCategories()
-                } else Promise.reject();
-            })
-            .catch((err) => alert("Something went wrong"));
+    const del = () => {
+        deleteCategory(_id);
     };
 
     const expand = () => {
@@ -69,7 +61,8 @@ const CategoryRow = ({ category }) => {
                                     Edit
                                 </Button>
                                 <Button
-                                    onClick={deleteCategory} size="sm" className="ms-2" variant="danger">
+                                    onClick={del} size="sm" className="ms-2" variant="danger"
+                                >
                                     Delete
                                 </Button>
                                 <Button size="sm" className="ms-2" title="Add SubCategory" >
