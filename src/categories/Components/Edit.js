@@ -8,7 +8,7 @@ import CategoryForm from "./CategoryForm";
 
 const Edit = () => {
     const globalStore = useGlobalStore();
-    const { store, getCategories } = useCategoryContext();
+    const { store } = useCategoryContext();
     const dispatch = useCategoryDispatch();
 
     const [formValues, setFormValues] = useState({
@@ -24,7 +24,7 @@ const Edit = () => {
         const object = {
             ...categoryObject,
             modified: new Date(),
-            modifiedBy: globalStore.user.userId 
+            modifiedBy: globalStore.user.userId
         }
         axios
             .put(url, object)
@@ -32,29 +32,24 @@ const Edit = () => {
                 if (res.status === 200) {
                     console.log("Category successfully updated");
                     //getCategories();
-                } 
+                }
                 else Promise.reject();
             })
             .catch((err) => alert("Something went wrong"));
-        dispatch({ type: ActionTypes.CLOSE_FORM })
+        dispatch({ type: ActionTypes.CLOSE_EDITING_FORM })
     };
 
-    const formatDate  = (date) => date 
-        ? new Date(date).toLocaleDateString() + " " + new Date(date).toLocaleTimeString() 
+    const formatDate = (date) => date
+        ? new Date(date).toLocaleDateString() + " " + new Date(date).toLocaleTimeString()
         : "";
 
-    // Load data from server and reinitialize category form
     useEffect(() => {
-        axios
-            .get(`${hostPort}/categories/get-category/${store.category._id}`)
-            .then(({data}) => {
-                data.created = formatDate(data.created);
-                data.modified = formatDate(data.modified);
-                data.modifiedBy_userName = data.modifiedBy_user.userName;
-                setFormValues(data);
-            })
-            .catch((err) => console.log(err));
-    }, [store.category._id]);
+        const { category } = store;
+        category.created = formatDate(category.created);
+        category.modified = formatDate(category.modified);
+        category.modifiedBy_userName = category.modifiedBy_user.userName;
+        setFormValues(category);
+    }, [store]);
 
     return (
         <CategoryForm

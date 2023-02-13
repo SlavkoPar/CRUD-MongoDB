@@ -15,7 +15,7 @@ const InLineCategoryForm = (props) => {
   const dispatch = useCategoryDispatch();
 
   const closeForm = () => {
-    dispatch({ type: ActionTypes.CLOSE_FORM })
+    dispatch({ type: ActionTypes.CLOSE_ADDING_FORM,  })
   }
 
   const validationSchema = Yup.object().shape({

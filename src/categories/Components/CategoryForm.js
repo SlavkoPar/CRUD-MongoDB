@@ -12,7 +12,7 @@ const CategoryForm = (props) => {
   const dispatch = useCategoryDispatch();
 
   const closeForm = () => {
-    dispatch({ type: ActionTypes.CLOSE_FORM })
+    dispatch({ type: props.isEdit ? ActionTypes.CLOSE_EDITING_FORM : ActionTypes.CLOSE_ADDING_FORM })
   }
 
   const validationSchema = Yup.object().shape({
@@ -35,7 +35,7 @@ const CategoryForm = (props) => {
         <Form>
           <FormGroup>
             <label className="form-label" htmlFor="name">Name</label>
-            <Field name="name" type="text" className="form-control" />
+            <Field name="name" type="text" className="form-control" /> {/*form-control-sm*/}
             <ErrorMessage
               name="name"
               className="d-block invalid-feedback"

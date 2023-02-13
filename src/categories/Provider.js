@@ -9,7 +9,8 @@ export const ActionTypes = {
   ADD: 'ADD',
   REFRESH_ADDED_CATEGORY: 'REFRESH_ADDED_CATEGORY',
   EDIT: 'EDIT',
-  CLOSE_FORM: 'CLOSE_FORM'
+  CLOSE_ADDING_FORM: 'CLOSE_ADDING_FORM',
+  CLOSE_EDITING_FORM: 'CLOSE_EDITING_FORM'
 }
 
 export const FORM_MODES = {
@@ -43,8 +44,24 @@ export function Provider({ children }) {
       });
   }, []);
 
+  const editCategory = useCallback(_id => {
+    const url = `${hostPort}/categories/get-category/${_id}`
+    console.log(`FETCHING --->>> ${url}`)
+    dispatch({ type: ActionTypes.SET_LOADING })
+    axios
+      .get(url)
+      .then(({ data }) => {
+        console.log(data)
+        dispatch({ type: ActionTypes.EDIT, category: data });
+      })
+      .catch((error) => {
+        console.log(error);
+        dispatch({ type: ActionTypes.SET_ERROR, payload: error });
+      });
+  }, []);
+
   /*
-  const refreshAddedCategory = useCallback((_id) => {
+  const refreshAddedCategory = useCallback(_id => {
     const url = `${hostPort}/categories/get-category/${_id}`
     console.log(`FETCHING --->>> ${url}`)
     dispatch({ type: ActionTypes.SET_LOADING })
@@ -62,7 +79,7 @@ export function Provider({ children }) {
   */
 
   return (
-    <CategoryContext.Provider value={{ store, getCategories }}>
+    <CategoryContext.Provider value={{ store, getCategories, editCategory }}>
       <CategoryDispatchContext.Provider value={dispatch}>
         {children}
       </CategoryDispatchContext.Provider>
@@ -151,8 +168,7 @@ function categoryReducer(state, action) {
       const { data } = action;
       return {
         ...state,
-        categories: state.categories.map( c => c.inAdding ? data : c )
-        // treba li ovo inAdding: false
+        categories: state.categories.map(c => c.inAdding ? data : c)
       }
     }
 
@@ -161,17 +177,33 @@ function categoryReducer(state, action) {
       return { 
         ...state, 
         mode: FORM_MODES.EDIT,
-        category, //, inEditing: true }
+        category, 
         categories: state.categories.map(c => c._id === category._id 
-          ? {...c, inEditing: true} 
+          ? {...category, inEditing: true} 
           : c
-        )
+        ),
+        loading: false
       };
     }
 
-    case ActionTypes.CLOSE_FORM: {
-      return { ...state, mode: null, category: null };
+    case ActionTypes.CLOSE_ADDING_FORM: {
+      return { 
+        ...state, 
+        mode: FORM_MODES.NULL, 
+        category: null,
+        categories: state.categories.filter(c => !c.inAdding )
+      };
     }
+
+    case ActionTypes.CLOSE_EDITING_FORM: {
+      return { 
+        ...state, 
+        mode: FORM_MODES.NULL, 
+        category: null,
+        categories: state.categories.map(c => c.inEditing ? ({...c, inEditing: false}) : c)
+      };
+    }
+
 
     default: {
       throw Error('Unknown action: ' + action.type);

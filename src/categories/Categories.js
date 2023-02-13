@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 
 import { useGlobalStore } from '../GlobalStoreProvider'
-import { Provider, useCategoryContext, FORM_MODES, ActionTypes, useCategoryDispatch, initialCategory } from "./Provider";
+import { Provider, useCategoryContext, FORM_MODES, ActionTypes, useCategoryDispatch } from "./Provider";
 
 import TreeView from "./Components/TreeView";
 // import Add from "./Components/Add";
@@ -31,12 +31,12 @@ const Providered = () => {
             </Button>
             <Container>
                 <Row>
-                    <Col xs={12} md={6}>
+                    <Col xs={12} md={7}>
                         <div>
                             <TreeView parentCategory={null} level={1} />
                         </div>
                     </Col>
-                    <Col xs={0} md={6}>
+                    <Col xs={0} md={5}>
                         {/* {store.mode === FORM_MODES.ADD && <Add category={category??initialCategory} />} */}
                         {/* <div class="d-none d-lg-block">hide on screens smaller than lg</div> */}
                         <div className="d-none d-md-block">

@@ -35,7 +35,7 @@ const Add = ({ category, inLine }) => {
                     Promise.reject()
             })
             .catch(err => alert('Something went wrong'))
-        dispatch({ type: ActionTypes.CLOSE_FORM })
+        dispatch({ type: ActionTypes.CLOSE_ADDING_FORM })
     }
 
     return (

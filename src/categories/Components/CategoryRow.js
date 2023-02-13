@@ -6,7 +6,7 @@ import { Button } from "react-bootstrap";
 import axios from "axios";
 
 import { useGlobalStore } from '../../GlobalStoreProvider'
-import { hostPort, ActionTypes, FORM_MODES, useCategoryContext, useCategoryDispatch } from '../Provider'
+import { hostPort, ActionTypes, useCategoryContext, useCategoryDispatch } from '../Provider'
 import TreeView from "./TreeView";
 import Add from "./Add";
 import Edit from "./Edit";
@@ -15,7 +15,7 @@ const CategoryRow = ({ category }) => {
     const { _id, name, level, inEditing, inAdding } = category;
 
     const globalStore = useGlobalStore();
-    const { store } = useCategoryContext();
+    const { store, editCategory } = useCategoryContext();
     const dispatch = useCategoryDispatch();
 
     const [isExpanded, setIsExpanded] = useState(false);
@@ -38,7 +38,12 @@ const CategoryRow = ({ category }) => {
         if (refresh)
             dispatch({ type: ActionTypes.CLEAN_SUB_TREE, category })
     }
-    console.log({ inEditing, isExpanded, inAdding })
+
+    const edit = (_id) => {
+        // Load data from server and reinitialize category
+        editCategory(_id);
+    }
+    // console.log({ inEditing, isExpanded, inAdding })
 
     return (
         <>
@@ -58,7 +63,9 @@ const CategoryRow = ({ category }) => {
                         <td>
                             <div className="my-0 py-0" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                                 <Button size="sm" className="ms-2"
-                                    onClick={() => { dispatch({ type: ActionTypes.EDIT, category }) }}>
+                                    //onClick={() => { dispatch({ type: ActionTypes.EDIT, category }) }}>
+                                    onClick={() => edit(_id)}
+                                >
                                     Edit
                                 </Button>
                                 <Button
@@ -87,10 +94,10 @@ const CategoryRow = ({ category }) => {
             {(isExpanded || inEditing) && !inAdding &&
                 <tr>
                     <td colSpan={5} className="px-0 py-0">
-                        {inEditing ? (
+                        {inEditing ? ( // store.mode === FORM_MODES.EDIT &&
                             // <div class="d-lg-none">hide on lg and wider screens</div>
                             <div className="mx-3 d-md-none">
-                                <Edit category={category} inLine={true} />
+                                <Edit />
                             </div>
                         )
                             : (
