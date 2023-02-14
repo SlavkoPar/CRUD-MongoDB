@@ -60,9 +60,9 @@ const InLineCategoryForm = (props) => {
         </td>
         <td>
           <FormButtons
-            cancelForm={cancelForm}
             title={props.children}
             inLine={true}
+            cancelForm={cancelForm}
             handleSubmit={() => formRef.current.handleSubmit()}
           />
         </td>

@@ -8,11 +8,13 @@ export const ActionTypes = {
   SET_ERROR: 'SET_ERROR',
   ADD: 'ADD',
   REFRESH_ADDED_CATEGORY: 'REFRESH_ADDED_CATEGORY',
+  REFRESH_UPDATED_CATEGORY: 'REFRESH_UPDATED_CATEGORY',
   EDIT: 'EDIT',
   DELETE: 'DELETE',
   CLOSE_ADDING_FORM: 'CLOSE_ADDING_FORM',
   CANCEL_ADDING_FORM: 'CANCEL_ADDING_FORM',
-  CLOSE_EDITING_FORM: 'CLOSE_EDITING_FORM'
+  CLOSE_EDITING_FORM: 'CLOSE_EDITING_FORM',
+  CANCEL_EDITING_FORM: 'CANCEL_EDITING_FORM'
 }
 
 export const FORM_MODES = {
@@ -47,6 +49,28 @@ export function Provider({ children }) {
       });
   }, []);
 
+  const createCategory = useCallback(category => {
+
+    dispatch({ type: ActionTypes.SET_LOADING }) // TODO treba li ovo 
+    axios
+      .post(`${hostPort}/categories/create-category`, category)
+      .then(({ status, data }) => {
+        if (status === 200) {
+          console.log('Category successfully created')
+          dispatch({ type: ActionTypes.REFRESH_ADDED_CATEGORY, data });
+          dispatch({ type: ActionTypes.CLOSE_ADDING_FORM })
+        }
+        else {
+          console.log('Status is not 200', status)
+          dispatch({ type: ActionTypes.SET_ERROR, payload: { msg: 'Status is not 200', status } });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        dispatch({ type: ActionTypes.SET_ERROR, payload: error });
+      });
+  }, []);
+
   const editCategory = useCallback(_id => {
     const url = `${hostPort}/categories/get-category/${_id}`
     console.log(`FETCHING --->>> ${url}`)
@@ -56,6 +80,30 @@ export function Provider({ children }) {
       .then(({ data }) => {
         console.log(data)
         dispatch({ type: ActionTypes.EDIT, category: data });
+      })
+      .catch((error) => {
+        console.log(error);
+        dispatch({ type: ActionTypes.SET_ERROR, payload: error });
+      });
+  }, []);
+
+
+  const updateCategory = useCallback(category => {
+    dispatch({ type: ActionTypes.SET_LOADING })
+    const url = `${hostPort}/categories/update-category/${category._id}`
+    console.log(`UPDATING --->>> ${url}`)
+    axios
+      .put(url, category)
+      .then(({ status, data }) => {
+        if (status === 200) {
+          console.log("Category successfully updated");
+          dispatch({ type: ActionTypes.REFRESH_UPDATED_CATEGORY, category: data });
+          dispatch({ type: ActionTypes.CLOSE_EDITING_FORM })
+        }
+        else {
+          console.log('Status is not 200', status)
+          dispatch({ type: ActionTypes.SET_ERROR, payload: { msg: 'Status is not 200', status } });
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -98,7 +146,7 @@ export function Provider({ children }) {
   */
 
   return (
-    <CategoryContext.Provider value={{ store, getCategories, editCategory, deleteCategory }}>
+    <CategoryContext.Provider value={{ store, getCategories, createCategory, editCategory, updateCategory, deleteCategory }}>
       <CategoryDispatchContext.Provider value={dispatch}>
         {children}
       </CategoryDispatchContext.Provider>
@@ -191,11 +239,22 @@ function categoryReducer(state, action) {
       const { data } = action;
       return {
         ...state,
-        mode: FORM_MODES.NULL,
-        category: null,
-        categories: state.categories.map(c => c.inAdding ? data : c)
+        categories: state.categories.map(c => c.inAdding ? data : c),
+        loading: false
       }
     }
+
+    case ActionTypes.REFRESH_UPDATED_CATEGORY: {
+      const { category } = action;
+      return {
+        ...state,
+        mode: FORM_MODES.NULL,
+        category: null,
+        categories: state.categories.map(c => c.inEditing ? category : c), // doesn't contain isEditing 
+        loading: false
+      }
+    }
+
 
     case ActionTypes.EDIT: {
       const { category } = action;
@@ -228,6 +287,7 @@ function categoryReducer(state, action) {
         category: null
       };
     }
+
     case ActionTypes.CANCEL_ADDING_FORM: {
       return {
         ...state,
@@ -237,8 +297,7 @@ function categoryReducer(state, action) {
       };
     }
 
-    
-
+    case ActionTypes.CANCEL_EDITING_FORM:
     case ActionTypes.CLOSE_EDITING_FORM: {
       return {
         ...state,

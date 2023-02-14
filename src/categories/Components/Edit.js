@@ -1,15 +1,13 @@
 //import { useParams } from 'react-router-dom'
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { hostPort, ActionTypes, useCategoryContext, useCategoryDispatch } from '../Provider'
+import { useCategoryContext } from '../Provider'
 import { useGlobalStore } from '../../GlobalStoreProvider'
 
 import CategoryForm from "./CategoryForm";
 
 const Edit = () => {
     const globalStore = useGlobalStore();
-    const { store } = useCategoryContext();
-    const dispatch = useCategoryDispatch();
+    const { store, updateCategory } = useCategoryContext();
 
     const [formValues, setFormValues] = useState({
         name: "",
@@ -19,24 +17,13 @@ const Edit = () => {
         modifiedBy_userName: ""
     });
 
-    const url = `${hostPort}/categories/update-category/${store.category._id}`
     const onSubmit = (categoryObject) => {
         const object = {
             ...categoryObject,
             modified: new Date(),
             modifiedBy: globalStore.user.userId
         }
-        axios
-            .put(url, object)
-            .then((res) => {
-                if (res.status === 200) {
-                    console.log("Category successfully updated");
-                    //getCategories();
-                }
-                else Promise.reject();
-            })
-            .catch((err) => alert("Something went wrong"));
-        dispatch({ type: ActionTypes.CLOSE_EDITING_FORM })
+        updateCategory(object)
     };
 
     const formatDate = (date) => date

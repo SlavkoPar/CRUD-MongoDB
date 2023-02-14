@@ -15,6 +15,10 @@ const CategoryForm = (props) => {
     dispatch({ type: props.isEdit ? ActionTypes.CLOSE_EDITING_FORM : ActionTypes.CLOSE_ADDING_FORM })
   }
 
+  const cancelForm = () => {
+    dispatch({ type: props.isEdit ? ActionTypes.CANCEL_EDITING_FORM : ActionTypes.CANCEL_ADDING_FORM })
+  }
+
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Required"),
     // email: Yup.string()
@@ -33,8 +37,6 @@ const CategoryForm = (props) => {
     nameRef.current.focus()
   }, [])
 
-
-
   return (
     <div className="form-wrapper">
       <CloseButton onClick={closeForm}  className="float-end" />
@@ -52,7 +54,7 @@ const CategoryForm = (props) => {
 
           {props.isEdit && <CreatedModifiedForm modified={props.initialValues.modified} /> }
           <FormButtons 
-            closeForm={closeForm}
+            cancelForm={cancelForm}
             handleSubmit={() => formRef.current.handleSubmit()} title={props.children} />
         </Form>
       </Formik>

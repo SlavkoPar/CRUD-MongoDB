@@ -143,7 +143,6 @@ router.get('/:id', async (req, res, next) => {
       console.log(error)
       return next(error);
     } else {
-      console.log(data)
       res.json(data);
     }
   });
@@ -192,13 +191,16 @@ router
       {
         $set: req.body,
       },
+      {
+        returnDocument: 'after'
+      },
       (error, data) => {
         if (error) {
           console.log(error);
           return next(error);
         } else {
           res.json(data);
-          console.log("Category updated successfully !");
+          console.log("Category updated successfully !", data);
         }
       }
     );
