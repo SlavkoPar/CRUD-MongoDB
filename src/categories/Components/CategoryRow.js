@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWindowClose, faEdit, faCaretRight, faCaretDown, faPlus } from '@fortawesome/free-solid-svg-icons'
 
 import { Button } from "react-bootstrap";
-import axios from "axios";
 
 import { useGlobalStore } from '../../GlobalStoreProvider'
 import { hostPort, ActionTypes, useCategoryContext, useCategoryDispatch } from '../Provider'
